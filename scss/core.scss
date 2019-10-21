@@ -1,0 +1,47 @@
+$red: #e44232;
+$danger: $red;
+
+$enable-responsive-font-sizes: true;
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
+
+.root {
+  @extend .container;
+  padding-top: 30px;
+}
+
+h1 {
+  @extend .display-2;
+  font-family: 'Great Vibes', cursive;
+  color: $red;
+}
+
+ul {
+  @extend .list-group;
+
+  >li {
+    @extend .list-group-item;
+    font-size: 24px;
+  }
+}
+
+button[type=checkbox] {
+  @extend .btn;
+  @extend .btn-outline-danger;
+
+  display: inline-block;
+  vertical-align: middle;
+
+  padding: 6px;
+
+  margin-right: 1.25rem;
+  border-radius: 100px;
+
+
+
+
+  &:checked {
+
+  }
+}
