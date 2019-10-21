@@ -19,10 +19,11 @@ h1 {
 
 ul {
   @extend .list-group;
+  @extend .list-group-flush;
 
-  >li {
+  li {
     @extend .list-group-item;
-    font-size: 24px;
+    @extend .lead;
   }
 }
 
