@@ -6,7 +6,7 @@ $enable-responsive-font-sizes: true;
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
 
-.root {
+#app > div {
   @extend .container;
   padding-top: 30px;
 }
@@ -44,5 +44,20 @@ button[type=checkbox] {
 
   &:checked {
 
+  }
+}
+
+.new-todo {
+  @extend .form-group;
+  @extend .list-group-item;
+
+  input {
+    @extend .form-control;
+    border: none;
+
+    &:focus {
+      border-color: $red;
+      box-shadow: 0 0 0 .2rem rgba($red, 60%);
+    }
   }
 }
