@@ -6,6 +6,7 @@
     [com.fulcrologic.fulcro.algorithms.merge :as mrg]
     ["react-icons/md" :refer [MdCheck]]))
 
+(declare Todo)
 (def check-icon (MdCheck #js {:size "1.5rem"}))
 
 (defn new-todo [task]
@@ -19,10 +20,9 @@
       (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))))
 
 (defsc NewTodoField [this {:keys [ui/value]}]
-  {:query         [:new-todo/id :ui/value]
-   :ident         :new-todo/id
-   :initial-state (fn [id] {:new-todo/id id
-                            :ui/value    ""})}
+  {:query         [:ui/value]
+   :ident         (fn [] [:component/id :new-todo])
+   :initial-state {:ui/value    ""}}
   (li :.new-todo
     (form {:onSubmit
            (fn [e] (.preventDefault e)
@@ -54,11 +54,11 @@
   {:query [{:all-todos (comp/get-query Todo)}
            {:new-todo (comp/get-query NewTodoField)}]
    :initial-state
-          (fn [_] {:new-todo (comp/get-initial-state NewTodoField :top-level)
+          (fn [_] {:new-todo (comp/get-initial-state NewTodoField)
                    :all-todos
                              (mapv (partial comp/get-initial-state Todo)
                                ["Prepare talk" "Buy milk" "Do my homework"])})}
-  (let [sorted-todos (sort-by (juxt :todo/done? :todo/id) all-todos)]
+  (let [sorted-todos (sort-by :todo/done? all-todos)]
     (div
       (h1 "Todoish")
       (ul
