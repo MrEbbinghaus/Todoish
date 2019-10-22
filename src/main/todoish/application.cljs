@@ -1,6 +1,7 @@
 (ns todoish.application
   (:require [com.fulcrologic.fulcro.networking.http-remote :as net]
             [com.fulcrologic.fulcro.application :as app]
+            [com.fulcrologic.fulcro.rendering.keyframe-render :as keyframe-render]
             [com.fulcrologic.fulcro.components :as comp]))
 
 (def secured-request-middleware

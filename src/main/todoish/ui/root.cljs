@@ -1,62 +1,66 @@
 (ns todoish.ui.root
   (:require
-    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h1 h3 button input span]]
+    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h1 h3 form button input span]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
+    [com.fulcrologic.fulcro.algorithms.merge :as mrg]
     ["react-icons/md" :refer [MdCheck]]))
 
-(declare Todo Root ui-todo)
 (def check-icon (MdCheck #js {:size "1.5rem"}))
 
-(comment
-  (defsc Root [this {:keys [todos]}]
-    {:query [:todos]
-     :initial-state {:todos ["Prepare talk" "Buy milk"]}}
-    (div :.root
-      (h1 "My Todo List")
-      (ul (map li todos)))))
+(defn new-todo [task]
+  #:todo{:id    (rand-int 100)
+         :task  task
+         :done? false})
 
-(defn new-todo-field [comp]
+(defmutation add-todo [{:keys [task]}]
+  (action [{:keys [state]}]
+    (let [todo (new-todo task)]
+      (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))))
+
+(defsc NewTodoField [this {:keys [ui/value]}]
+  {:query         [:new-todo/id :ui/value]
+   :ident         :new-todo/id
+   :initial-state (fn [id] {:new-todo/id id
+                            :ui/value    ""})}
   (li :.new-todo
-    (input {:placeholder "Add a new task ..."})))
+    (form {:onSubmit
+           (fn [e] (.preventDefault e)
+             (comp/transact! this [(add-todo {:task value})]))}
 
-(defsc Root [this {:keys [all-todos]}]
-  {:query [:root/id {:all-todos (comp/get-query Todo)}]
-   :initial-state
-          (fn [_] {:all-todos
-                   (mapv (partial comp/get-initial-state Todo)
-                     ["Prepare talk" "Buy milk" "Do my homework"])})}
-  (div
-    (h1 "Todoish")
-    (ul
-      (new-todo-field this)
-      (map ui-todo all-todos))))
+      (input {:placeholder "Add a new task ..."
+              :value       value
+              :onChange    #(m/set-string! this :ui/value :event %)}))))
 
-(comment
-  (defsc Todo [this {:todo/keys [task]}]
-    {:query [:todo/task]}
-    (li task)))
+(def ui-new-todo-field (comp/factory NewTodoField))
 
-(declare complete-task)
+(defmutation toggle-todo [_]
+  (action [{:keys [ref state]}]
+    (swap! state update-in ref update :todo/done? not)))
 
 (defsc Todo [this {:todo/keys [task done?]}]
-  {:query [:todo/id :todo/task :todo/done?]
-   :ident :todo/id
-   :initial-state (fn [task] #:todo{:id (rand-int 50)
-                                    :task task
-                                    :done? false})}
+  {:query         [:todo/id :todo/task :todo/done?]
+   :ident         :todo/id
+   :initial-state (fn [task] (new-todo task))}
   (li {:data-done done?}
-    (button {:type "checkbox"
-             ; :onClick #(comp/transact! this [(complete-task {})])
-             :onClick #(m/toggle! this :todo/done?)}
+    (button {:type    "checkbox"
+             :onClick #(comp/transact! this [(toggle-todo {})] {:refresh [:all-todos]})}
       check-icon)
     (span task)))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
-(defmutation complete-task [_]
-  (action [{:keys [state ref]}]
-    (swap! state update-in ref update :todo/done? not)))
-
-
-
+(defsc Root [_ {:keys [all-todos new-todo]}]
+  {:query [{:all-todos (comp/get-query Todo)}
+           {:new-todo (comp/get-query NewTodoField)}]
+   :initial-state
+          (fn [_] {:new-todo (comp/get-initial-state NewTodoField :top-level)
+                   :all-todos
+                             (mapv (partial comp/get-initial-state Todo)
+                               ["Prepare talk" "Buy milk" "Do my homework"])})}
+  (let [sorted-todos (sort-by (juxt :todo/done? :todo/id) all-todos)]
+    (div
+      (h1 "Todoish")
+      (ul
+        (ui-new-todo-field new-todo)
+        (map ui-todo sorted-todos)))))

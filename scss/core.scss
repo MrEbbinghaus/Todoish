@@ -49,6 +49,15 @@ button[type=checkbox] {
   @extend .form-group;
   @extend .list-group-item;
 
+  form {
+    @extend .input-group;
+  }
+
+  button {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+
   input {
     @extend .form-control;
     border: none;
