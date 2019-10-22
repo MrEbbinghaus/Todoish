@@ -1,5 +1,5 @@
 $red: #e44232;
-$danger: $red;
+$primary: $red;
 
 $enable-responsive-font-sizes: true;
 
@@ -9,12 +9,12 @@ $enable-responsive-font-sizes: true;
 #app > div {
   @extend .container;
   padding-top: 30px;
-}
 
-h1 {
-  @extend .display-2;
-  font-family: 'Great Vibes', cursive;
-  color: $red;
+  > h1 {
+    @extend .display-2;
+    @extend .text-primary;
+    font-family: 'Great Vibes', cursive;
+  }
 }
 
 ul {
@@ -24,12 +24,16 @@ ul {
   li {
     @extend .list-group-item;
     @extend .lead;
+
+    &[data-done="true"] {
+      filter: grayscale(100%) opacity(50%);
+    }
   }
 }
 
 button[type=checkbox] {
   @extend .btn;
-  @extend .btn-outline-danger;
+  @extend .btn-outline-primary;
 
   display: inline-block;
   vertical-align: middle;
@@ -38,13 +42,6 @@ button[type=checkbox] {
 
   margin-right: 1.25rem;
   border-radius: 100px;
-
-
-
-
-  &:checked {
-
-  }
 }
 
 .new-todo {
@@ -56,8 +53,8 @@ button[type=checkbox] {
     border: none;
 
     &:focus {
-      border-color: $red;
-      box-shadow: 0 0 0 .2rem rgba($red, 60%);
+      border-color: $primary;
+      box-shadow: 0 0 0 .2rem rgba($primary, 60%);
     }
   }
 }

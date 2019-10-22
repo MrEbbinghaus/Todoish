@@ -27,7 +27,7 @@
           (fn [_] {:todos
                    (map (partial comp/get-initial-state Todo)
                      ["Prepare talk" "Buy milk" "Do my homework"])})}
-  (div :.root
+  (div
     (h1 "Todoish")
     (ul
       (new-todo-field this)
@@ -41,8 +41,8 @@
 (defsc Todo [this {:todo/keys [task done?]}]
   {:query [:todo/id :todo/task :todo/done?]
    :ident :todo/id
-   :initial-state (fn [task] #:todo{:id (random-uuid) :task task :done? false})}
-  (li (when done? {:style {:filter "grayscale(100%) opacity(50%)"}})
+   :initial-state (fn [task] #:todo{:id (random-uuid) :task task :done? (rand-nth [true false])})}
+  (li {:data-done done?}
     (button {:type "checkbox"} check-icon)
     (span task)))
 
