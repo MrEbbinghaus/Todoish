@@ -26,7 +26,8 @@ ul {
     @extend .lead;
 
     &[data-done="true"] {
-      filter: grayscale(100%) opacity(50%);
+      filter: grayscale(100%) opacity(40%);
+      text-decoration: line-through;
     }
   }
 }
