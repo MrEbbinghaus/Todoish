@@ -37,18 +37,26 @@
     {:query [:todo/task]}
     (li task)))
 
+(declare complete-task)
+
 (defsc Todo [this {:todo/keys [task done?]}]
   {:query [:todo/id :todo/task :todo/done?]
    :ident :todo/id
-   :initial-state (fn [task] #:todo{:id (random-uuid) :task task :done? (rand-nth [true false])})}
+   :initial-state (fn [task] #:todo{:id (rand-int 50)
+                                    :task task
+                                    :done? false})}
   (li {:data-done done?}
-    (button {:type "checkbox"} check-icon)
+    (button {:type "checkbox"
+             ; :onClick #(comp/transact! this [(complete-task {})])
+             :onClick #(m/toggle! this :todo/done?)}
+      check-icon)
     (span task)))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
-(defmutation complete-task [params]
-  (action [env] true))
+(defmutation complete-task [_]
+  (action [{:keys [state ref]}]
+    (swap! state update-in ref update :todo/done? not)))
 
 
 
