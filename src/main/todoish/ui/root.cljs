@@ -20,18 +20,17 @@
   (li :.new-todo
     (input {:placeholder "Add a new task ..."})))
 
-(defsc Root [this {:keys [todos]}]
-  {:query [{:todos (comp/get-query Todo)}]
-   :ident (fn [] [:component/id :ROOT])
+(defsc Root [this {:keys [all-todos]}]
+  {:query [:root/id {:all-todos (comp/get-query Todo)}]
    :initial-state
-          (fn [_] {:todos
-                   (map (partial comp/get-initial-state Todo)
+          (fn [_] {:all-todos
+                   (mapv (partial comp/get-initial-state Todo)
                      ["Prepare talk" "Buy milk" "Do my homework"])})}
   (div
     (h1 "Todoish")
     (ul
       (new-todo-field this)
-      (map ui-todo todos))))
+      (map ui-todo all-todos))))
 
 (comment
   (defsc Todo [this {:todo/keys [task]}]
