@@ -9,9 +9,7 @@
            {:new-todo (comp/get-query todo/NewTodoField)}]
    :initial-state
           (fn [_] {:new-todo (comp/get-initial-state todo/NewTodoField)
-                   :all-todos
-                             (mapv (partial comp/get-initial-state todo/Todo)
-                               ["Prepare talk" "Buy milk" "Do my homework"])})}
+                   :all-todos []})}
   (let [sorted-todos (sort-by :todo/done? all-todos)]
     (div
       (h1 "Todoish")
