@@ -5,7 +5,7 @@
     [todoish.util :refer [uuid]]
     [clojure.test :refer [deftest is]]
     [fulcro-spec.core :refer [specification provided behavior assertions component provided!]]
-    [todoish.model.mock-database :as db]
+    [todoish.mock-database :as db]
     [datascript.core :as d]
     [taoensso.timbre :as log]))
 

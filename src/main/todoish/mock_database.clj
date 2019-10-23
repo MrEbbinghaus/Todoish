@@ -1,4 +1,4 @@
-(ns todoish.model.mock-database
+(ns todoish.mock-database
   "This is a mock database implemented via Datascript, which runs completely in memory, has few deps, and requires
   less setup than Datomic itself.  Its API is very close to Datomics, and for a demo app makes it possible to have the
   *look* of a real back-end without having quite the amount of setup to understand for a beginner."

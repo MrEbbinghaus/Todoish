@@ -1,6 +1,6 @@
 (ns todoish.model.account
   (:require
-    [todoish.model.mock-database :as db]
+    [todoish.mock-database :as db]
     [datascript.core :as d]
     [ghostwheel.core :refer [>defn => | ?]]
     [com.wsscode.pathom.connect :as pc :refer [defresolver defmutation]]

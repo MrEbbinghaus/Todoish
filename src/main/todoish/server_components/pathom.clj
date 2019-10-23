@@ -8,7 +8,7 @@
     [clojure.core.async :as async]
     [todoish.model.account :as acct]
     [todoish.server-components.config :refer [config]]
-    [todoish.model.mock-database :as db]))
+    [todoish.mock-database :as db]))
 
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
