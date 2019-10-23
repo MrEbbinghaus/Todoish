@@ -4,7 +4,7 @@
             [com.fulcrologic.fulcro.rendering.keyframe-render :as keyframe-render]
             [com.fulcrologic.fulcro.components :as comp]
             [com.fulcrologic.fulcro.data-fetch :as df]
-            [todoish.ui.root :refer [Todo]]))
+            [todoish.models.todo :refer [Todo]]))
 
 (def secured-request-middleware
   ;; The CSRF token is embedded via server_components/html.clj
