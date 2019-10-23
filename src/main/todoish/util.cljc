@@ -1,4 +1,4 @@
-(ns app.util
+(ns todoish.util
   #?(:cljs (:refer-clojure :exclude [uuid]))
   (:require [ghostwheel.core :refer [>defn]]
             [clojure.spec.alpha :as s]))

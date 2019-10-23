@@ -1,4 +1,4 @@
-(ns app.sample-test
+(ns todoish.sample-test
   (:require
     [clojure.test :refer [deftest]]
     [fulcro-spec.core :refer [specification provided behavior assertions]]))
