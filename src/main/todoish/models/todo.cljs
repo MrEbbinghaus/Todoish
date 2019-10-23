@@ -15,9 +15,9 @@
          :done? false})
 
 (defmutation add-todo [{:keys [todo]}]
-  (action [{:keys [state]}] true)
-  ;(swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
-  (remote [env] true
+  (action [{:keys [state]}]
+    (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
+  (remote [env]
     (-> env
       (m/with-target (targeting/prepend-to [:all-todos]))
       (m/returning Todo))))
