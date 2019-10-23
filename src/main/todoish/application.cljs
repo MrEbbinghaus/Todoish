@@ -2,7 +2,9 @@
   (:require [com.fulcrologic.fulcro.networking.http-remote :as net]
             [com.fulcrologic.fulcro.application :as app]
             [com.fulcrologic.fulcro.rendering.keyframe-render :as keyframe-render]
-            [com.fulcrologic.fulcro.components :as comp]))
+            [com.fulcrologic.fulcro.components :as comp]
+            [com.fulcrologic.fulcro.data-fetch :as df]
+            [todoish.ui.root :refer [Todo]]))
 
 (def secured-request-middleware
   ;; The CSRF token is embedded via server_components/html.clj
@@ -13,6 +15,7 @@
 (defonce SPA (app/fulcro-app
                {;; This ensures your client can talk to a CSRF-protected server.
                 ;; See middleware.clj to see how the token is embedded into the HTML
+                :client-did-mount (fn [app] (df/load! app :all-todos Todo))
                 :remotes {:remote (net/fulcro-http-remote
                                     {:url                "/api"
                                      :request-middleware secured-request-middleware})}}))

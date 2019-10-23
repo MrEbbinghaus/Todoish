@@ -16,10 +16,10 @@
 (defn ^:export refresh []
   (log/info "Hot code Remount")
   (cssi/upsert-css "componentcss" {:component root/Root})
-  (app/mount! SPA root/Root "app"))
+  (app/mount! SPA root/Root "todoish"))
 
 (defn ^:export init []
   (log/info "Application starting.")
   (cssi/upsert-css "componentcss" {:component root/Root})
   ;(inspect/app-started! SPA))
-  (app/mount! SPA root/Root "app" #_{:initialize-state? false}))
+  (app/mount! SPA root/Root "todoish" #_{:initialize-state? false}))

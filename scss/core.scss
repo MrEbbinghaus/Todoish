@@ -6,7 +6,7 @@ $enable-responsive-font-sizes: true;
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
 
-#app > div {
+#todoish > div {
   @extend .container;
   padding-top: 30px;
 
@@ -20,15 +20,16 @@ $enable-responsive-font-sizes: true;
 ul {
   @extend .list-group;
   @extend .list-group-flush;
+}
 
-  li {
-    @extend .list-group-item;
-    @extend .lead;
+li {
+  @extend .list-group-item;
+  @extend .lead;
+  list-style-type: none;
 
-    &[data-done="true"] {
-      filter: grayscale(100%) opacity(40%);
-      text-decoration: line-through;
-    }
+  &[data-done="true"] {
+    filter: grayscale(100%) opacity(40%);
+    text-decoration: line-through;
   }
 }
 

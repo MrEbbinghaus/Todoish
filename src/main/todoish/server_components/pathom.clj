@@ -6,9 +6,8 @@
     [com.wsscode.pathom.core :as p]
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
-    [todoish.model.account :as acct]
-    [todoish.server-components.config :refer [config]]
-    [todoish.mock-database :as db]))
+    [todoish.models.todo :as todo]
+    [todoish.server-components.config :refer [config]]))
 
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -17,9 +16,12 @@
    (-> (get env ::pc/indexes)
      ; this is necessary for now, because the index contains functions which can not be serialized by transit.
      (update ::pc/index-resolvers #(into {} (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
-     (update ::pc/index-mutations #(into {} (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
+     (update ::pc/index-mutations #(into {} (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %))
+     ; to minimize clutter in the Index Explorer
+     (update ::pc/index-resolvers (fn [rs] (apply dissoc rs (filter #(clojure.string/starts-with? (namespace %) "com.wsscode.pathom") (keys rs)))))
+     (update ::pc/index-mutations (fn [rs] (apply dissoc rs (filter #(clojure.string/starts-with? (namespace %) "com.wsscode.pathom") (keys rs))))))})
 
-(def all-resolvers [acct/resolvers index-explorer])
+(def all-resolvers [todo/resolvers index-explorer])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
@@ -40,7 +42,7 @@
   (log/debug "Pathom transaction:" (pr-str tx))
   req)
 
-(defn build-parser [db-connection]
+(defn build-parser []
   (let [real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
                        ::p/env     {::p/reader               [p/map-reader pc/parallel-reader
@@ -51,8 +53,8 @@
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
                                                          ;; environment, like the server config, database connections, etc.
                                                          (assoc env
-                                                           :db @db-connection ; real datomic would use (d/db db-connection)
-                                                           :connection db-connection
+                                                           ;:db @db-connection ; real datomic would use (d/db db-connection)
+                                                           ;:connection db-connection
                                                            :config config)))
                                     (preprocess-parser-plugin log-requests)
                                     p/error-handler-plugin
@@ -68,5 +70,5 @@
                                     tx))))))
 
 (defstate parser
-  :start (build-parser db/conn))
+  :start (build-parser))
 

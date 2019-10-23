@@ -45,7 +45,7 @@
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body
-      [:div#app]
+      [:div#todoish]
       [:script {:src "js/main/main.js"}]]]))
 
 ;; ================================================================================
@@ -58,13 +58,15 @@
   (html5
     [:html {:lang "en"}
      [:head {:lang "en"}
-      [:title "devcards"]
+      [:title "Workspaces"]
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
       [:link {:href "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
               :rel  "stylesheet"}]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
+      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]
+      [:link {:href "css/core.css"
+              :rel  "stylesheet"}]]
      [:body
       [:div#app]
       [:script {:src "workspaces/js/main.js"}]]]))
