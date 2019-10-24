@@ -45,9 +45,7 @@
 (defsc Todo [this {:todo/keys [id task done?]}]
   {:query         [:todo/id :todo/task :todo/done?]
    :ident         :todo/id
-   :initial-state (fn [task]
-                    (js/console.log task)
-                    (new-todo task))}
+   :initial-state (fn [task] (new-todo task))}
   (li {:data-done done?}
     (button {:type    "checkbox"
              :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
