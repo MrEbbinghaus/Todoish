@@ -12,7 +12,7 @@
     },
     "scripts": {
         "client/main": "npx shadow-cljs watch :main",
-        "client/ws": "npx shadow-cljs watch :workspaces",
+        "client/workspaces": "npx shadow-cljs watch :workspaces",
         "client/tests": "npx shadow-cljs watch :test",
         "client/cljs": "shadow-cljs cljs-repl :main",
         "client/clj": "shadow-cljs clj-repl",

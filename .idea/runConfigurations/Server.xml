@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Server" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
+  <configuration default="false" name="Server" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false" singleton="true">
     <module name="Todoish" />
     <setting name="replType" value="NREPL" />
     <setting name="execution" value="DEPS" />
