@@ -21,9 +21,10 @@
   (let [all-ids (keys @db)]
     {:all-todos (map #(hash-map :todo/id %) all-ids)}))
 
-(defresolver todo-resovler [_ {:keys [todo/id]}]
+
+(defresolver todo-resolver [_ {:keys [todo/id]}]
   {::pc/input #{:todo/id}
    ::pc/output [:todo/id :todo/task :todo/done?]}
   (get @db id))
 
-(def resolvers [add-todo all-todo-ids toggle-todo todo-resovler])
+(def resolvers [add-todo all-todo-ids toggle-todo todo-resolver])
