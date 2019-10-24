@@ -4,9 +4,9 @@ This project shows a minimal fulcro app for demonstration purposes.
 
 == How to get started
 
-You can start how many components of the project you like. When you just want to play with components in CLJS without the backend I recommend to only start the workspaces compiler.
+You can start as many components of the project you like. When you just want to play with components in CLJS without the backend I recommend to only start the workspaces compiler.
 
-```ShellSession
+```Shell
 yarn install
 
 
@@ -22,13 +22,11 @@ clojure -A:dev -Dtrace -Dghostwheel.enabled=true
 Clojure 1.10.1
 # The ns is defined in src/dev/user
 user=> (start)
-
 # after modifications of the backend code:
 user=> (restart)
+# visit http://localhost:3000
 
-# visit localhost:3000
-
-#### To only use the Frontend ####
+#### To only use the frontend ####
 # Workspaces
 npm run client/workspaces
 # visit http://localhost:8023/workspaces
@@ -36,10 +34,9 @@ npm run client/workspaces
 # CLJS Tests:
 npm run client/tests
 # visit http://localhost:8022
-
 ```
 
-You can find the `npm run` script in package.json.
+You can find the `npm run` scripts in `package.json`.
 To understand what is called, please refer to the docs of shadow-cljs: http://shadow-cljs.org/
 
 When you import this project into Cursive/IntelliJ the jobs above are already available as:
