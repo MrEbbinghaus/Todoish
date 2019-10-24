@@ -6,13 +6,34 @@
             [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
             ["react-icons/md" :refer [MdCheck]]))
 
-(declare Todo)
+(declare Todo action remote)
 (def check-icon (MdCheck #js {:size "1.5rem"}))
 
 (defn new-todo [task]
   #:todo{:id    (rand-int 100)
          :task  task
          :done? false})
+
+;; TODO SECTION
+
+(defmutation toggle-todo [{:todo/keys [id]}]
+  (action [{:keys [state]}]
+    (swap! state update-in [:todo/id id] update :todo/done? not))
+  (remote [_] true))
+
+(defsc Todo [this {:todo/keys [id task done?]}]
+  {:query         [:todo/id :todo/task :todo/done?]
+   :ident         :todo/id
+   :initial-state (fn [task] (new-todo task))}
+  (li {:data-done done?}
+    (button {:type    "checkbox"
+             :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
+      check-icon)
+    (span task)))
+
+(def ui-todo (comp/factory Todo {:keyfn :todo/id}))
+
+;; New Todo Section
 
 (defmutation add-todo [{:keys [todo]}]
   (action [{:keys [state]}]
@@ -36,20 +57,3 @@
               :onChange    #(m/set-string! this :ui/value :event %)}))))
 
 (def ui-new-todo-field (comp/factory NewTodoField))
-
-(defmutation toggle-todo [{:todo/keys [id]}]
-  (action [{:keys [state]}]
-    (swap! state update-in [:todo/id id] update :todo/done? not))
-  (remote [_] true))
-
-(defsc Todo [this {:todo/keys [id task done?]}]
-  {:query         [:todo/id :todo/task :todo/done?]
-   :ident         :todo/id
-   :initial-state (fn [task] (new-todo task))}
-  (li {:data-done done?}
-    (button {:type    "checkbox"
-             :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
-      check-icon)
-    (span task)))
-
-(def ui-todo (comp/factory Todo {:keyfn :todo/id}))

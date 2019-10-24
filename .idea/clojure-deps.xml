@@ -4,7 +4,7 @@
     <option name="linkedExternalProjectsSettings">
       <set>
         <DepsProjectSettings>
-          <option name="enabledAliases" value="test" />
+          <option name="enabledAliases" value="dev,test" />
           <option name="externalProjectPath" value="$PROJECT_DIR$" />
           <option name="modules">
             <set>
