@@ -37,11 +37,12 @@
 
 (def ui-new-todo-field (comp/factory NewTodoField))
 
-(defmutation toggle-todo [_]
-  (action [{:keys [ref state]}]
-    (swap! state update-in ref update :todo/done? not)))
+(defmutation toggle-todo [{:todo/keys [id]}]
+  (action [{:keys [state]}]
+    (swap! state update-in [:todo/id id] update :todo/done? not))
+  (remote [_] true))
 
-(defsc Todo [this {:todo/keys [task done?]}]
+(defsc Todo [this {:todo/keys [id task done?]}]
   {:query         [:todo/id :todo/task :todo/done?]
    :ident         :todo/id
    :initial-state (fn [task]
@@ -49,7 +50,7 @@
                     (new-todo task))}
   (li {:data-done done?}
     (button {:type    "checkbox"
-             :onClick #(comp/transact! this [(toggle-todo {})] {:refresh [:all-todos]})}
+             :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
       check-icon)
     (span task)))
 

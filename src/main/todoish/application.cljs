@@ -13,9 +13,9 @@
     (net/wrap-fulcro-request)))
 
 (defonce SPA (app/fulcro-app
-               {;; This ensures your client can talk to a CSRF-protected server.
+               {:client-did-mount (fn [app] (df/load! app :all-todos Todo))
+                ;; This ensures your client can talk to a CSRF-protected server.
                 ;; See middleware.clj to see how the token is embedded into the HTML
-                :client-did-mount (fn [app] (df/load! app :all-todos Todo))
                 :remotes {:remote (net/fulcro-http-remote
                                     {:url                "/api"
                                      :request-middleware secured-request-middleware})}}))
