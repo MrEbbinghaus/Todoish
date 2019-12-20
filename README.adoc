@@ -1,6 +1,11 @@
+:imagesdir: .github/ressources
+
 = Todoish
 
 This project shows a minimal fulcro app for demonstration purposes.
+
+image::Todoish-Demo.png[align="center"]
+
 
 == How to get started
 
@@ -45,6 +50,7 @@ When you import this project into Cursive/IntelliJ the jobs above are already av
 ###### To connect to the CLJS nREPL:
 1. Connect to localhost:9000
 2. Execute `(shadow/repl :main)`. (you can select another target of course)
+
 
 
 == Development Mode
