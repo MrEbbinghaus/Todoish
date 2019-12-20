@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DepsSettings">
-    <option name="linkedExternalProjectsSettings">
+  <component name="DepsProjectSettings">
+    <option name="enabledAliases">
       <set>
-        <DepsProjectSettings>
-          <option name="enabledAliases" value="dev,test" />
-          <option name="externalProjectPath" value="$PROJECT_DIR$" />
-          <option name="modules">
-            <set>
-              <option value="$PROJECT_DIR$" />
-            </set>
-          </option>
-          <option name="useAutoImport" value="true" />
-          <option name="useQualifiedModuleNames" value="true" />
-        </DepsProjectSettings>
+        <option value="dev" />
+        <option value="test" />
       </set>
     </option>
   </component>
+  <component name="DepsProjectsManager">
+    <option name="projectFiles">
+      <list>
+        <option value="file://$PROJECT_DIR$/deps.edn" />
+      </list>
+    </option>
+  </component>
 </project>
+

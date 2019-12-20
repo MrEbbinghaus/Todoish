@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="66f96c55-cc2c-4c05-9faa-2afbc8f113bf" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/todoish/models/todo.clj" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/todoish/models/todo.clj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/todoish/models/todo.cljs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/todoish/models/todo.cljs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/todoish/server_components/pathom.clj" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/todoish/server_components/pathom.clj" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DepsLocalSettings">
+    <option name="repoId" value="" />
+    <option name="repoUrl" value="" />
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="Todoish" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="Todoish" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="modificationStamps">
+      <map>
+        <entry key="$USER_HOME$/.clojure/deps.edn" value="671529167" />
+        <entry key="$PROJECT_DIR$" value="4716084500934" />
+        <entry key="$PROJECT_DIR$/deps.edn" value="3337284271" />
+        <entry key="/usr/local/Cellar/clojure/1.10.1.478/deps.edn" value="2119753476" />
+        <entry key="/usr/local/Cellar/clojure/1.10.1.483/deps.edn" value="1878601241" />
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$/../Hacktoberfest/fulcro-template" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+        <entry key="$PROJECT_DIR$/../dbas-demo-nav" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../dbas-demo-navgraph" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../decide" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../invite" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="CLOJURE_DEPS">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Todoish" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Todoish" type="f1a62948:ProjectNode" />
+                <item name="Aliases" type="d57c182a:AliasesNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="SCSS File" />
+        <option value="Clojure Namespace" />
+        <option value="HTML File" />
+        <option value="ClojureScript" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1SWWgayGz8oLl4NJ59sQK7lqcdm" />
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="GoToKeyword.includeLibraries" value="false" />
+    <property name="GoToNamespace.includeLibraries" value="false" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Clojure" />
+    <property name="cursive.last.file.extension./Users/bjebb/Development/Todoish/src/main" value="clj" />
+    <property name="full.screen.before.presentation.mode" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Propra15" />
+    <property name="list.type.of.created.stylesheet" value="SCSS" />
+    <property name="node.js.path.for.package.jscs" value="project" />
+    <property name="node.js.selected.package.jscs" value="" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="options.lastSelected" value="preferences.sourceCode" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/todoish/models" />
+      <recent name="$PROJECT_DIR$/src/main/todoish" />
+      <recent name="$PROJECT_DIR$/src/main/todoish/ui" />
+      <recent name="$PROJECT_DIR$/.." />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="ReplState" timestamp="1572280052106">{:repl-history {:ide [], :local [{:command &quot;(filter pos? [1 -1 2])&quot;, :offset 22, :ns &quot;user&quot;} {:command &quot;(-&gt; [1 -2 3] (remove neg?))&quot;, :offset 27, :ns &quot;user&quot;} {:command &quot;(clojure.repl/source-fn complement)&quot;, :offset 35, :ns &quot;user&quot;} {:command &quot;(clojure.repl/source-fn 'complement)&quot;, :offset 36, :ns &quot;user&quot;} {:command &quot;((remove pos?) 5)&quot;, :offset 17, :ns &quot;user&quot;} {:command &quot;(remove pos?)&quot;, :offset 13, :ns &quot;user&quot;} {:command &quot;(some pos? 5)&quot;, :offset 13, :ns &quot;user&quot;} {:command &quot;(apply some pos? 5)&quot;, :offset 19, :ns &quot;user&quot;} {:command &quot;(some-&gt; pos? 5)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(cond-&gt; 5 pos?)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(cond-&gt; 5 pos? 5)&quot;, :offset 17, :ns &quot;user&quot;} {:command &quot;(some-&gt; 5 pos?)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(some-&gt; 5 neg?)&quot;, :offset 15, :ns &quot;user&quot;} {:command &quot;(namespace :todo/bla)&quot;, :offset 21, :ns &quot;user&quot;} {:command &quot;(tools-ns/refresh)&quot;, :offset 18, :ns &quot;user&quot;} {:command &quot;(start)&quot;, :offset 7, :ns &quot;user&quot;} {:command &quot;(def a (atom 0))&quot;, :offset 16, :ns &quot;user&quot;} {:command &quot;(inc nil)&quot;, :offset 9, :ns &quot;user&quot;} {:command &quot;(+ 1 nil)&quot;, :offset 9, :ns &quot;user&quot;} {:command &quot;(def a (atom))&quot;, :offset 14, :ns &quot;user&quot;} {:command &quot;(def a (atom nil))&quot;, :offset 18, :ns &quot;user&quot;} {:command &quot;(swap! a inc)&quot;, :offset 13, :ns &quot;user&quot;} {:command &quot;(restart)&quot;, :offset 9, :ns &quot;user&quot;} {:command &quot;(def db (atom {}))&quot;, :offset 18, :ns &quot;todoish.models.todo&quot;} {:command &quot;(def last-id (atom -1))&quot;, :offset 23, :ns &quot;todoish.models.todo&quot;}], :remote [{:command &quot;(js/console.log \&quot;Hello World\&quot;)&quot;, :offset 30, :ns &quot;shadow.user&quot;} {:command &quot;(shadow/repl :main)&quot;, :offset 19, :ns &quot;shadow.user&quot;} {:command &quot;(js/console.log \&quot;Hello World2!\&quot;)&quot;, :offset 32, :ns &quot;cljs.user&quot;}]}}</component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Clojure REPL.Server">
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ClojureREPL" factoryName="Local" activateToolWindowBeforeRun="false">
+      <setting name="replType" value="NREPL" />
+      <setting name="execution" value="LEININGEN" />
+      <module name="" />
+      <setting name="jvmArgs" value="" />
+      <setting name="parameters" value="" />
+      <setting name="workingDir" value="" />
+      <setting name="profiles" value="" />
+      <setting name="aliases" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="ClojureREPL" factoryName="Remote" activateToolWindowBeforeRun="false">
+      <setting name="host" value="" />
+      <setting name="port" value="0" />
+      <setting name="replType" value="0" />
+      <module name="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Clojure REPL.Server" />
+      <item itemvalue="Clojure REPL.CLJS REPL" />
+      <item itemvalue="npm.client/main" />
+      <item itemvalue="npm.workspaces" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="66f96c55-cc2c-4c05-9faa-2afbc8f113bf" name="Default Changelist" comment="" />
+      <created>1571679943851</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1571679943851</updated>
+      <workItem from="1571679945261" duration="10907000" />
+      <workItem from="1571691997115" duration="589000" />
+      <workItem from="1571692692679" duration="615000" />
+      <workItem from="1571693483911" duration="3289000" />
+      <workItem from="1571728718352" duration="33753000" />
+      <workItem from="1571900289611" duration="22505000" />
+      <workItem from="1572277012925" duration="2468000" />
+      <workItem from="1573305366450" duration="651000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <created>1571693857774</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1571693857774</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Kick showdown from deps">
+      <created>1571694871422</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1571694871422</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Restyle list entries">
+      <created>1571694887402</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1571694887402</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Delete unnecessary files">
+      <created>1571695734790</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1571695734790</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Delete unnecessary files">
+      <created>1571695795274</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1571695795274</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add new task field">
+      <created>1571696646947</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1571696646947</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fix require of removed ns">
+      <created>1571730378275</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1571730378275</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Simplify styling">
+      <created>1571740331400</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1571740331400</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Strike through done tasks">
+      <created>1571746978900</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1571746978900</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Fix normalization of todos">
+      <created>1571747025270</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1571747025270</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Allow to mark todos as done">
+      <created>1571747044477</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1571747044477</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Implement adding of new todos">
+      <created>1571754343664</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1571754343664</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Update deps">
+      <created>1571754374389</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1571754374389</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Make new-todo component a singleton">
+      <created>1571764218762</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1571764218762</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Fix index-explorer getting the wrong data structure">
+      <created>1571855110389</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1571855110389</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Fix wrong namespaces">
+      <created>1571855137998</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1571855137998</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Move mock database out of package">
+      <created>1571855499251</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1571855499251</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Implement everything else">
+      <created>1571863182411</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1571863182411</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Add title to client side workspaces">
+      <created>1571864032243</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1571864032243</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Uncomment add-todo mutation action">
+      <created>1571864098664</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1571864098664</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Relax security while developing">
+      <created>1571864752297</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1571864752297</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Fix wrong namespace for todo">
+      <created>1571864821817</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1571864821817</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Remove initial state from root">
+      <created>1571864854861</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1571864854861</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Add toggle todo to backend mutations">
+      <created>1571903447189</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1571903447189</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Kick some deps">
+      <created>1571903825317</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1571903825317</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Fix typo">
+      <created>1571904492422</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1571904492422</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Add intellij run configurations">
+      <created>1571912696782</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1571912696782</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Add quick start to project">
+      <created>1571913416433</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1571913416433</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Fix typos">
+      <created>1571914436015</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1571914436015</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Simplify code base for presentation">
+      <created>1571918644342</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1571918644342</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Tidy up for presentation">
+      <created>1571923560115</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1571923560115</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Tidy up for presentation">
+      <created>1571923772791</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1571923772791</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Fix require of removed ns" />
+    <MESSAGE value="Simplify styling" />
+    <MESSAGE value="Strike through done tasks" />
+    <MESSAGE value="Fix normalization of todos" />
+    <MESSAGE value="Allow to mark todos as done" />
+    <MESSAGE value="Implement adding of new todos" />
+    <MESSAGE value="Update deps" />
+    <MESSAGE value="Make new-todo component a singleton" />
+    <MESSAGE value="Fix index-explorer getting the wrong data structure" />
+    <MESSAGE value="Fix wrong namespaces" />
+    <MESSAGE value="Move mock database out of package" />
+    <MESSAGE value="Implement everything else" />
+    <MESSAGE value="Add title to client side workspaces" />
+    <MESSAGE value="Uncomment add-todo mutation action" />
+    <MESSAGE value="Relax security while developing" />
+    <MESSAGE value="Fix wrong namespace for todo" />
+    <MESSAGE value="Remove initial state from root" />
+    <MESSAGE value="Add toggle todo to backend mutations" />
+    <MESSAGE value="Kick some deps" />
+    <MESSAGE value="Fix typo" />
+    <MESSAGE value="Add intellij run configurations" />
+    <MESSAGE value="Add quick start to project" />
+    <MESSAGE value="Fix typos" />
+    <MESSAGE value="Simplify code base for presentation" />
+    <MESSAGE value="Tidy up for presentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tidy up for presentation" />
+  </component>
+</project>
