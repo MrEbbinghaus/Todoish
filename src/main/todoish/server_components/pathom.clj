@@ -7,7 +7,8 @@
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
     [todoish.models.todo :as todo]
-    [todoish.server-components.config :refer [config]]))
+    [todoish.server-components.config :refer [config]]
+    [todoish.server-components.database :refer [db]]))
 
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -55,6 +56,8 @@
                                                          (assoc env
                                                            ;:db @db-connection ; real datomic would use (d/db db-connection)
                                                            ;:connection db-connection
+                                                           :conn db
+                                                           :db @db
                                                            :config config)))
                                     (preprocess-parser-plugin log-requests)
                                     p/error-handler-plugin
