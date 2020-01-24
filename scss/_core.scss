@@ -1,16 +1,14 @@
-$red: #e44232;
-$primary: $red;
 
 $enable-responsive-font-sizes: true;
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
-@import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
+//@import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
 
 #todoish > div {
   @extend .container;
   padding-top: 30px;
 
-  > h1 {
+  > h1, .title {
     @extend .display-2;
     @extend .text-primary;
     font-family: 'Great Vibes', cursive;
@@ -22,37 +20,52 @@ ul {
   @extend .list-group-flush;
 }
 
-li {
+.todo-entry {
   @extend .list-group-item;
-  @extend .lead;
+  display: flex;
+  align-items: center;
   list-style-type: none;
+
+  //font-size: 1.25rem;
+  //font-weight: 300;
 
   &[data-done="true"] {
     filter: grayscale(100%) opacity(40%);
-    text-decoration: line-through;
+
+    .todo-entry__task {
+      text-decoration: line-through;
+    }
+  }
+
+  &__task {
+    width: 100%;
+    align-self: center;
+  }
+
+  @include hover-focus {
+    z-index: 1; // Place hover/focus items above their siblings for proper border styling
+    color: $list-group-action-hover-color;
+    text-decoration: none;
+    background-color: $list-group-hover-bg;
   }
 }
 
-button[type=checkbox] {
-  @extend .btn;
-  @extend .btn-outline-primary;
 
-  display: inline-block;
+.btn-todo {
+  @extend .rounded-circle;
+  flex: none;
+  width: 40px;
+  height: 40px;
   vertical-align: middle;
 
-  padding: 6px;
+  padding: 0;
 
   margin-right: 1.25rem;
-  border-radius: 100px;
 }
 
 .new-todo {
   @extend .form-group;
   @extend .list-group-item;
-
-  form {
-    @extend .input-group;
-  }
 
   button {
     @extend .btn;

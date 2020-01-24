@@ -40,8 +40,9 @@
       [:title "Todoish"]
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
-      [:link {:href "css/core.css"
-              :rel  "stylesheet"}]
+      [:link {:href "css/light.css" :rel "stylesheet"}]
+      [:link {:href "css/dark.css" :rel "stylesheet" :media "(prefers-color-scheme: dark)"}]
+      [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body

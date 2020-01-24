@@ -4,10 +4,10 @@
             [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
             [com.fulcrologic.fulcro.algorithms.merge :as mrg]
             [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
+            [clojure.string :as str]
             ["react-icons/md" :refer [MdCheck]]))
 
-(declare Todo action remote)
-(def check-icon (MdCheck #js {:size "1.5rem"}))
+(def check-icon (MdCheck #js {:size "70%"}))
 
 (defn new-todo [task]
   #:todo{:id    (rand-int 100)
@@ -25,11 +25,14 @@
   {:query         [:todo/id :todo/task :todo/done?]
    :ident         :todo/id
    :initial-state (fn [task] (new-todo task))}
-  (li {:data-done done?}
-    (button {:type    "checkbox"
-             :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
-      check-icon)
-    (span task)))
+  (li :.todo-entry
+      {:data-done done?}
+      (button :.btn.btn-primary.btn-todo
+              {:type    "checkbox"
+               :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
+              check-icon)
+      (div :.todo-entry__task task)
+      (button :.btn.btn-link.btn-delete "Delete")))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
@@ -37,23 +40,30 @@
 
 (defmutation add-todo [{:keys [todo]}]
   (action [{:keys [state]}]
-    (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
+          (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
   (remote [env]
-    (-> env
-      (m/with-target (targeting/prepend-to [:all-todos]))
-      (m/returning Todo))))
+          (-> env
+              (m/with-target (targeting/prepend-to [:all-todos]))
+              (m/returning Todo))))
 
 (defsc NewTodoField [this {:keys [ui/value]}]
   {:query         [:ui/value]
    :ident         (fn [] [:component/id :new-todo])
-   :initial-state {:ui/value    ""}}
-  (li :.new-todo
-    (form {:onSubmit
-           (fn [e] (.preventDefault e)
-             (comp/transact! this [(add-todo {:todo (new-todo value)})]))}
-
-      (input {:placeholder "Add a new task ..."
-              :value       value
-              :onChange    #(m/set-string! this :ui/value :event %)}))))
+   :initial-state {:ui/value ""}}
+  (form :.new-todo.border-0
+        {:onSubmit
+         (fn [e]
+           (.preventDefault e)
+           (when-not (str/blank? value)
+             (comp/transact! this [(add-todo {:todo (new-todo value)})])))}
+        (div :.input-group
+             (input :.form-control
+                    {:placeholder "What needs to be done?"
+                     :value       value
+                     :required    true
+                     :onChange    #(m/set-string! this :ui/value :event %)})
+             (button :.btn.btn-primary
+                     {:type "submit"}
+                     "Enter"))))
 
 (def ui-new-todo-field (comp/factory NewTodoField))

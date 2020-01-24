@@ -13,6 +13,5 @@
   (let [sorted-todos (sort-by :todo/done? all-todos)]
     (div
       (h1 "Todoish")
-      (ul
-        (todo/ui-new-todo-field new-todo)
-        (map todo/ui-todo sorted-todos)))))
+      (todo/ui-new-todo-field new-todo)
+      (ul (map todo/ui-todo sorted-todos)))))
