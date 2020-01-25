@@ -1,16 +1,10 @@
 (ns todoish.client
   (:require
     [com.fulcrologic.fulcro.application :as app]
-    [com.fulcrologic.fulcro.networking.http-remote :as net]
-    [com.fulcrologic.fulcro.data-fetch :as df]
+    [com.fulcrologic.fulcro.algorithms.server-render :as ssr]
     [taoensso.timbre :as log]
-    [todoish.ui.root :as root]
-    [todoish.models.todo :as todo]))
-
-(defonce SPA (app/fulcro-app
-               {:client-did-mount (fn [app] (df/load! app :all-todos todo/Todo))
-                :remotes {:remote (net/fulcro-http-remote
-                                    {:url                "/api"})}}))
+    [todoish.application :refer [SPA]]
+    [todoish.ui.root :as root]))
 
 (defn ^:export refresh []
   (log/info "Hot code Remount")
@@ -18,4 +12,8 @@
 
 (defn ^:export init []
   (log/info "Application starting.")
-  (app/mount! SPA root/Root "todoish"))
+  (let [db (ssr/get-SSR-initial-state)]
+    (when db
+      (log/debug "Initial SSR state found!")
+      (reset! (::app/state-atom SPA) db))
+    (app/mount! SPA root/Root "todoish" (when db {:hydrate? true :initial-state? false}))))

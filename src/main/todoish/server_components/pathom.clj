@@ -6,7 +6,7 @@
     [com.wsscode.pathom.core :as p]
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
-    [todoish.models.todo :as todo]
+    [todoish.api.todo :as todo]
     [todoish.server-components.config :refer [config]]
     [todoish.server-components.database :refer [db]]))
 
@@ -43,6 +43,8 @@
   (log/debug "Pathom transaction:" (pr-str tx))
   req)
 
+(def ^:dynamic *trace?* false)
+
 (defn build-parser []
   (let [real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
@@ -66,12 +68,11 @@
                                     p/trace-plugin]})
         ;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.
         ;; Understand that this makes the network responses much larger and should not be used in production.
-        trace?      (not (nil? (System/getProperty "trace")))]
+        trace? (not (nil? (System/getProperty "trace")))]
     (fn wrapped-parser [env tx]
-      (async/<!! (real-parser env (if trace?
+      (async/<!! (real-parser env (if *trace?*
                                     (conj tx :com.wsscode.pathom/trace)
                                     tx))))))
 
 (defstate parser
   :start (build-parser))
-

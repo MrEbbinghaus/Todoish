@@ -1,17 +1,24 @@
 (ns todoish.server-components.middleware
   (:require
     [todoish.server-components.config :refer [config]]
-    [todoish.server-components.pathom :refer [parser]]
+    [todoish.server-components.pathom :refer [parser *trace?*]]
     [mount.core :refer [defstate]]
     [com.fulcrologic.fulcro.server.api-middleware :refer [handle-api-request
                                                           wrap-transit-params
                                                           wrap-transit-response]]
+    [com.fulcrologic.fulcro.algorithms.server-render :as ssr]
+    [com.fulcrologic.fulcro.components :as comp]
+    [com.fulcrologic.fulcro.dom-server :as dom]
+    [com.fulcrologic.fulcro.algorithms.denormalize :as dn]
+    [com.fulcrologic.fulcro.algorithms.normalize :as norm]
     [ring.middleware.defaults :refer [wrap-defaults]]
     [ring.middleware.gzip :refer [wrap-gzip]]
     [ring.util.response :refer [response file-response resource-response]]
     [ring.util.response :as resp]
     [hiccup.page :refer [html5]]
-    [taoensso.timbre :as log]))
+    [taoensso.timbre :as log]
+    [todoish.ui.root :as ui-root]
+    [todoish.application :refer [SPA]]))
 
 (def ^:private not-found-handler
   (fn [req]
@@ -21,13 +28,37 @@
 
 
 (defn wrap-api [handler uri]
-  (fn [request]
-    (if (= uri (:uri request))
-      (handle-api-request
-        (:transit-params request)
-        (fn [tx] (parser {:ring/request request} tx)))
-      (handler request))))
+  (binding [*trace?* (not (nil? (System/getProperty "trace")))]
+    (fn [request]
+      (if (= uri (:uri request))
+        (handle-api-request
+          (:transit-params request)
+          (fn request-handler [tx]
+            (parser {:ring/request request} tx)))
+        (handler request)))))
 
+(defn ssr-html [csrf-token app normalized-db root-component-class]
+  (log/debug "Serving index.html")
+  (let [props (dn/db->tree (comp/get-query root-component-class) normalized-db normalized-db)
+        root-factory (comp/factory root-component-class)
+        app-html (binding [comp/*app* app] (dom/render-to-str (root-factory props)))
+        initial-state-script (ssr/initial-state->script-tag normalized-db)]
+    (html5
+      [:html {:lang "en"}
+       [:head {:lang "en"}
+        [:title "Todoish"]
+        [:meta {:charset "utf-8"}]
+        [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
+        [:link {:href "css/light.css" :rel "stylesheet"}]
+        initial-state-script
+        [:link {:href "css/dark.css" :rel "stylesheet" :media "(prefers-color-scheme: dark)"}]
+        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
+        [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
+        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
+       [:body
+        [:div#todoish
+         app-html]
+        [:script {:src "js/main/main.js"}]]])))
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
@@ -76,13 +107,25 @@
   (fn [{:keys [uri anti-forgery-token] :as req}]
     (cond
       (#{"/" "/index.html"} uri)
-      (-> (resp/response (index anti-forgery-token))
-        (resp/content-type "text/html"))
+      (-> (resp/response
+            (let [normalized-db (norm/tree->db ui-root/Root (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) true)]
+              (ssr-html anti-forgery-token SPA
+                        normalized-db
+                        ui-root/Root)))
+          (resp/content-type "text/html"))
+
+      (#{"/ssr.html"} uri)
+      (-> (resp/response
+            (let [normalized-db (norm/tree->db ui-root/Root (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) true)]
+              (ssr-html anti-forgery-token SPA
+                        normalized-db
+                        ui-root/Root)))
+          (resp/content-type "text/html"))
 
       ;; See note above on the `wslive` function.
       (#{"/wslive.html"} uri)
       (-> (resp/response (wslive anti-forgery-token))
-        (resp/content-type "text/html"))
+          (resp/content-type "text/html"))
 
       :else
       (ring-handler req))))

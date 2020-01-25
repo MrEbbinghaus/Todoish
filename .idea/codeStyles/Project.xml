@@ -1,0 +1,10 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <ClojureCodeStyleSettings>{
+  :todoish.models.todo/action 2
+  :todoish.models.todo/remote 2
+  :todoish.models.todo.ui/action 2
+  :todoish.models.todo.ui/remote 2
+}</ClojureCodeStyleSettings>
+  </code_scheme>
+</component>
