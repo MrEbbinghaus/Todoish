@@ -30,7 +30,13 @@ ul {
   //font-weight: 300;
 
   &[data-done="true"] {
-    filter: grayscale(100%) opacity(40%);
+    @media (prefers-color-scheme: light) {
+      filter: grayscale(100%) opacity(40%);
+    }
+    @media (prefers-color-scheme: dark) {
+      filter: grayscale(100%) opacity(80%);
+    }
+
 
     .todo-entry__task {
       text-decoration: line-through;
@@ -54,8 +60,8 @@ ul {
 .btn-todo {
   @extend .rounded-circle;
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 2em;
+  height: 2em;
   vertical-align: middle;
 
   padding: 0;
