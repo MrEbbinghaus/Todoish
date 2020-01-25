@@ -68,14 +68,15 @@
          (fn [e]
            (.preventDefault e)
            (when-not (str/blank? value)
-             (comp/transact! this [(add-todo {:todo (new-todo value)})])))}
+             (comp/transact! this [(add-todo {:todo (new-todo value)})
+                                   (m/set-props {:ui/value ""})])))}
         (div :.input-group
-             (input :.form-control
+             (input :.new-todo__task.form-control.border
                     {:placeholder "What needs to be done?"
                      :value       value
                      :required    true
                      :onChange    #(m/set-string! this :ui/value :event %)})
-             (button :.btn.btn-primary
+             (button :.new-todo__submit.btn.btn-primary
                      {:type "submit"}
                      "Enter"))))
 

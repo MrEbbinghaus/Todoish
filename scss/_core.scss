@@ -67,18 +67,18 @@ ul {
   @extend .form-group;
   @extend .list-group-item;
 
-  button {
-    @extend .btn;
-    @extend .btn-primary;
-  }
-
-  input {
-    @extend .form-control;
+  &__task {
     border: none;
 
     &:focus {
       border-color: $primary;
       box-shadow: 0 0 0 .2rem rgba($primary, 60%);
     }
+  }
+
+  &__submit {
+    @extend .rounded-right;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
