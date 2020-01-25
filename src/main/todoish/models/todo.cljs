@@ -5,7 +5,8 @@
             [com.fulcrologic.fulcro.algorithms.merge :as mrg]
             [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
             [clojure.string :as str]
-            ["react-icons/md" :refer [MdCheck]]))
+            ["react-icons/md" :refer [MdCheck]]
+            [taoensso.timbre :as log]))
 
 (def check-icon (MdCheck #js {:size "70%"}))
 
@@ -18,7 +19,17 @@
 
 (defmutation toggle-todo [{:todo/keys [id]}]
   (action [{:keys [state]}]
-    (swap! state update-in [:todo/id id] update :todo/done? not))
+          (swap! state update-in [:todo/id id] update :todo/done? not))
+  (remote [_] true))
+
+(defn delete-todo* [state id]
+  (-> state
+      (mrg/remove-ident* [:todo/id id] [:all-todos])
+      (update :todo/id dissoc id)))
+
+(defmutation delete-todo [{:keys [todo/id]}]
+  (action [{:keys [state]}]
+          (swap! state delete-todo* id))
   (remote [_] true))
 
 (defsc Todo [this {:todo/keys [id task done?]}]
@@ -32,7 +43,9 @@
                :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
               check-icon)
       (div :.todo-entry__task task)
-      (button :.btn.btn-link.btn-delete "Delete")))
+      (button :.btn.btn-link.btn-delete
+              {:onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
+              "Delete")))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
