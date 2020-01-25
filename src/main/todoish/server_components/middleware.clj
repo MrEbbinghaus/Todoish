@@ -108,7 +108,7 @@
     (cond
       (#{"/" "/index.html"} uri)
       (-> (resp/response
-            (let [normalized-db (norm/tree->db ui-root/Root (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) true)]
+            (let [normalized-db (ssr/build-initial-state (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) ui-root/Root)]
               (ssr-html anti-forgery-token SPA
                         normalized-db
                         ui-root/Root)))
