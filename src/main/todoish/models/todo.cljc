@@ -1,7 +1,7 @@
 (ns todoish.models.todo
   (:require [#?(:cljs com.fulcrologic.fulcro.dom
-                :clj com.fulcrologic.fulcro.dom-server)
-              :as dom :refer [div ul li p h1 h3 form button input span]]
+                :clj  com.fulcrologic.fulcro.dom-server)
+             :as dom :refer [div ul li p h1 h3 form button input span]]
             [com.fulcrologic.fulcro.dom.events :as evt]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
@@ -9,14 +9,15 @@
             [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
             [com.fulcrologic.fulcro.algorithms.normalized-state :as norm-state]
             [clojure.string :as str]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [todoish.material :as mui]))
 
 (def check-icon
   (dom/svg {:viewBox "0 0 24 24"
-            :stroke "currentColor"
-            :fill "currentColor"
-            :height "80%"}
-      (dom/path {:d "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"})))
+            :stroke  "currentColor"
+            :fill    "currentColor"
+            :height  "80%"}
+           (dom/path {:d "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"})))
 
 (defn new-todo [task]
   #:todo{:id    (rand-int 100)
@@ -69,25 +70,35 @@
 
 ;; New Todo Section
 
-(defsc NewTodoField [this {:keys [ui/value]}]
-       {:query         [:ui/value]
-        :ident         (fn [] [:component/id :new-todo])
-        :initial-state {:ui/value ""}}
-       (form :.new-todo.border-0
-             {:onSubmit
-              (fn [e]
-                (evt/prevent-default! e)
-                (when-not (str/blank? value)
-                  (comp/transact! this [(add-todo {:todo (new-todo value)})
-                                        #?(:cljs (m/set-props {:ui/value ""}))])))}
-             (div :.input-group
-                  (input :.new-todo__task.form-control.border
-                         {:placeholder "What needs to be done?"
-                          :value       value
-                          :required    true
-                          :onChange    #(m/set-string! this :ui/value :event %)})
-                  (button :.new-todo__submit.btn.btn-primary
-                          {:type "submit"}
-                          "Enter"))))
+(defsc NewTodoField [this {:keys [ui/value ui/error?]}]
+  {:query         [:ui/value :ui/error?]
+   :ident         (fn [] [:component/id :new-todo])
+   :initial-state {:ui/value "" :ui/error? false}}
+  (form
+    {:autocomplete "off"
+     :onSubmit     (fn [e]
+                     (evt/prevent-default! e)
+                     (if (str/blank? value)
+                       (m/set-value! this :ui/error? true)
+                       (comp/transact! this [(add-todo {:todo (new-todo value)})
+                                             #?(:cljs (m/set-props {:ui/value ""}))])))}
+    (mui/textfield
+      {:margin      "normal"
+       :variant     "outlined"
+       :fullWidth   true
+       :value       value
+       :error       error?
+       :helperText  (when error? "There is always something to do!")
+       :placeholder "What needs to be done?"
+       :onChange    (fn [e]
+                      (m/set-value! this :ui/error false)
+                      (m/set-string! this :ui/value :event e))
+
+       :InputProps  {:endAdornment (mui/input-adornment
+                                     {:position "end"}
+                                     (mui/button
+                                       {:color "primary"
+                                        :type  "submit"}
+                                       "Enter"))}})))
 
 (def ui-new-todo-field (comp/factory NewTodoField))
