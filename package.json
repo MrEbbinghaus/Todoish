@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4.9.0",
+        "@material-ui/icons": "^4.5.1",
         "bootstrap": "^4.4.1",
         "highlight.js": "^9.18.0",
         "react-grid-layout": "^0.17.1",

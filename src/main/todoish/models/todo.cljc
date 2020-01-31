@@ -10,7 +10,8 @@
             [com.fulcrologic.fulcro.algorithms.normalized-state :as norm-state]
             [clojure.string :as str]
             [taoensso.timbre :as log]
-            [todoish.material :as mui]))
+            [todoish.material :as mui]
+            [material-ui.icons :as mui-icon]))
 
 (def check-icon
   (dom/svg {:viewBox "0 0 24 24"
@@ -43,19 +44,21 @@
 ;endregion
 
 (defsc Todo [this {:todo/keys [id task done?]}]
-       {:query         [:todo/id :todo/task :todo/done?]
-        :ident         :todo/id
-        :initial-state (fn [task] (new-todo task))}
-       (li :.todo-entry
-           {:data-done done?}
-           (button :.btn.btn-primary.btn-todo
-                   {:type    "checkbox"
-                    :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}
-                   check-icon)
-           (div :.todo-entry__task task)
-           (button :.btn.btn-link.btn-delete
-                   {:onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
-                   "Delete")))
+  {:query         [:todo/id :todo/task :todo/done?]
+   :ident         :todo/id
+   :initial-state (fn [task] (new-todo task))}
+  (mui/list-item {:onClick   #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})
+                  :data-done done?
+                  :button    true}
+                 (mui/list-item-icon {}
+                                     (mui/checkbox {:edge          "start"
+                                                    :checked       done?
+                                                    :disableRipple true}))
+                 (mui/list-item-text {:primary task})
+                 (mui/list-item-secondary-action {}
+                                                 (mui/icon-button
+                                                   {:onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
+                                                   (mui-icon/delete)))))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
@@ -75,7 +78,7 @@
    :ident         (fn [] [:component/id :new-todo])
    :initial-state {:ui/value "" :ui/error? false}}
   (form
-    {:autocomplete "off"
+    {:autoComplete "off"
      :onSubmit     (fn [e]
                      (evt/prevent-default! e)
                      (if (str/blank? value)
@@ -90,15 +93,16 @@
        :error       error?
        :helperText  (when error? "There is always something to do!")
        :placeholder "What needs to be done?"
-       :onChange    (fn [e]
-                      (m/set-value! this :ui/error false)
-                      (m/set-string! this :ui/value :event e))
+       #?@(:cljs [:onChange #(comp/transact!
+                               this
+                               [(m/set-props {:ui/value  (evt/target-value %)
+                                              :ui/error? false})])
 
-       :InputProps  {:endAdornment (mui/input-adornment
-                                     {:position "end"}
-                                     (mui/button
-                                       {:color "primary"
-                                        :type  "submit"}
-                                       "Enter"))}})))
+                  :InputProps {:endAdornment (mui/input-adornment
+                                               {:position "end"}
+                                               (mui/button
+                                                 {:color "primary"
+                                                  :type  "submit"}
+                                                 "Enter"))}])})))
 
 (def ui-new-todo-field (comp/factory NewTodoField))

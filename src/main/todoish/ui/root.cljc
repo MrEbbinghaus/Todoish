@@ -4,7 +4,10 @@
         :clj  com.fulcrologic.fulcro.dom-server)
      :as dom :refer [div ul li p h1 h3 form button input span]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-    [todoish.models.todo :as todo]))
+    [todoish.models.todo :as todo]
+    [todoish.material :as mui]
+    [material-ui.layout :refer [ui-container]]
+    [material-ui.utils :refer [css-baseline]]))
 
 (defsc Root [_ {:keys [all-todos ui/new-todo]}]
   {:query [{:all-todos (comp/get-query todo/Todo)}
@@ -12,8 +15,19 @@
    :initial-state
           (fn [_] {:ui/new-todo (comp/get-initial-state todo/NewTodoField)
                    :all-todos   []})}
-  (let [sorted-todos (sort-by :todo/done? all-todos)]
-    (div
-      (h1 "Todoish")
+  (div
+    (css-baseline {})
+    (mui/app-bar {:position "static"}
+                 (mui/toolbar
+                   {}
+                   (mui/typography {:variant "h4"
+                                    :style   {:font-family "'Great Vibes', cursive"}} "Todoish")))
+    (ui-container
+      {:maxWidth "md"}
       (todo/ui-new-todo-field new-todo)
-      (ul (map todo/ui-todo sorted-todos)))))
+      (mui/paper
+        {}
+        (->> all-todos
+             (sort-by :todo/done?)
+             (map todo/ui-todo)
+             (mui/mui-list {}))))))
