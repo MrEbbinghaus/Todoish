@@ -6,52 +6,104 @@
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.application :as app]
     [todoish.models.todo :as todo]
-    [material-ui.layout :refer [ui-container]]
+    [material-ui.layout :as layout :refer [ui-container]]
     [material-ui.utils :refer [css-baseline]]
     [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
     #?(:cljs ["react-transition-group" :refer [TransitionGroup]])
     [material-ui.styles :refer [theme-provider prefers-dark?]]
     [material-ui.progress :as progress]
-    [material-ui.data-display :refer [mui-list typography]]
-    [material-ui.surfaces :refer [app-bar toolbar paper]]
+    [material-ui.navigation :as navigation]
+    [material-ui.inputs :as inputs]
+    [material-ui.icons :as icons]
+    [material-ui.data-display :as dd :refer [mui-list typography]]
+    [material-ui.surfaces :as surfaces :refer [toolbar paper]]
     #?(:cljs [todoish.ui.themes :as theme])
     [taoensso.timbre :as log]
-    [com.fulcrologic.fulcro.mutations :as m]))
+    [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]))
 
 #?(:cljs
    (def transition-group (interop/react-factory #?(:cljs TransitionGroup :default nil))))
 
+(defmutation toggle-drawer [{:keys [open?]}]
+  (action [{:keys [state]}]
+    (swap! state assoc-in [:ui/nav-drawer :ui/open?] open?)))
 
-(defsc Root [_ {:keys [all-todos ui/new-todo] ::app/keys [active-remotes]}]
+(defn open-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? true})] {:compressible? true}))
+(defn close-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? false})] {:compressible? true}))
+
+(defsc NavDrawer [this {:keys [ui/open?] :or {open? false}}]
+  {:query         [:ui/open?]
+   :initial-state {:ui/open? false}}
+  (navigation/swipeable-drawer
+    {:anchor  "left"
+     :open    open?
+     :onOpen  #(open-drawer! this)
+     :onClose #(close-drawer! this)}
+    (mui-list {}
+      (dd/list-item {:button true}
+        (dd/list-item-text {:primary "Hello Hello World"})))))
+
+(def ui-nav-drawer (comp/computed-factory NavDrawer))
+
+(defn app-bar [{:keys [loading? on-menu-click]}]
+  {:query [[::app/active-remotes '_]]}
+  (surfaces/app-bar
+    {:position "static"}
+    (toolbar
+      {}
+      (when on-menu-click
+        (inputs/icon-button
+          {:edge      "start"
+           :color     "inherit"
+           :ariaLabel "menu"}
+          (icons/menu {:onClick on-menu-click})))
+
+      (typography
+        {:variant "h4"
+         :style   {:fontFamily "'Great Vibes', cursive"
+                   :fontWeight "600"
+                   :flexGrow   1}
+         :noWrap  true}
+        "Todoish"))
+
+    (when loading?
+      (progress/linear-progress))))
+
+(defsc Root [this {:keys [all-todos ui/new-todo ui/nav-drawer] ::app/keys [active-remotes]}]
   {:query [{:all-todos (comp/get-query todo/Todo)}
            {:ui/new-todo (comp/get-query todo/NewTodoField)}
-           ::app/active-remotes]
+           ::app/active-remotes
+           {:ui/nav-drawer (comp/get-query NavDrawer)}]
    :initial-state
-          (fn [_] {:ui/new-todo (comp/get-initial-state todo/NewTodoField)
-                   :all-todos   []})}
+          (fn [_] {:ui/new-todo   (comp/get-initial-state todo/NewTodoField)
+                   :all-todos     []
+                   :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
   (theme-provider
     #?(:cljs {:theme theme/light-theme} :default {})
     (div
       (css-baseline {})
-      (app-bar
-        {:position "static"}
-        (toolbar
-          {}
-          (typography
-            {:variant "h4"
-             :style   {:fontFamily "'Great Vibes', cursive"
-                       :fontWeight "600"}}
-            "Todoish"))
-        (when-not (empty? active-remotes)
-          (progress/linear-progress {:color "secondary"})))
+
+      (app-bar {:loading? (:remote active-remotes)})
+      ;:on-menu-click #(open-drawer! this)})
+
+      #_(ui-nav-drawer nav-drawer)
 
       (ui-container
-        {:maxWidth "md"}
+        {:maxWidth "lg"}
         (todo/ui-new-todo-field new-todo)
         (paper
           {}
-          (->> all-todos
-            (sort-by :todo/done?)
-            (map todo/ui-todo)
-            #?(:cljs (transition-group {:className "todo-list"}))
-            (mui-list {})))))))
+          (if-not (empty? all-todos)
+            (layout/box
+              {:p     2
+               :mx    "auto"
+               :color "text.primary"}
+              (typography
+                {:align "center"
+                 :color "textSecondary"}
+                "Nothing to do. Congratulations!"))
+            (->> all-todos
+              (sort-by :todo/done?)
+              (map todo/ui-todo)
+              #?(:cljs (transition-group {:className "todo-list"}))
+              (mui-list nil))))))))
