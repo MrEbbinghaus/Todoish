@@ -9,10 +9,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/workspaces" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/.clj-kondo" />
       <excludeFolder url="file://$MODULE_DIR$/.clj-kondo/.cache" />
       <excludeFolder url="file://$MODULE_DIR$/.cpcache" />
+      <excludeFolder url="file://$MODULE_DIR$/.github" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.shadow-cljs" />
+      <excludeFolder url="file://$MODULE_DIR$/projectFilesBackup" />
       <excludeFolder url="file://$MODULE_DIR$/resources/public/css" />
       <excludeFolder url="file://$MODULE_DIR$/resources/public/js" />
       <excludeFolder url="file://$MODULE_DIR$/resources/public/workspaces/js" />

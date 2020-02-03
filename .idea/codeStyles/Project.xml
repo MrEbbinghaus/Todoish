@@ -1,6 +1,8 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <ClojureCodeStyleSettings>{
+  :action 2
+  :defsc 2
   :todoish.models.todo/action 2
   :todoish.models.todo/remote 2
   :todoish.models.todo.ui/action 2

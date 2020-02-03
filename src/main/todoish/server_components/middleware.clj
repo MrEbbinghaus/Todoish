@@ -48,16 +48,15 @@
        [:head {:lang "en"}
         [:title "Todoish"]
         [:meta {:charset "utf-8"}]
-        [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
-        [:link {:href "css/light.css" :rel "stylesheet"}]
-        initial-state-script
-        [:link {:href "css/dark.css" :rel "stylesheet" :media "(prefers-color-scheme: dark)"}]
+        [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
+        [:link {:href "css/style.css" :rel "stylesheet"}]
+        #_initial-state-script
         [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
         [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
         [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
        [:body
         [:div#todoish
-         app-html]
+         #_app-html]
         [:script {:src "js/main/main.js"}]]])))
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token

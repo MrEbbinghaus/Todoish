@@ -10,15 +10,11 @@
             [com.fulcrologic.fulcro.algorithms.normalized-state :as norm-state]
             [clojure.string :as str]
             [taoensso.timbre :as log]
-            [todoish.material :as mui]
-            [material-ui.icons :as mui-icon]))
-
-(def check-icon
-  (dom/svg {:viewBox "0 0 24 24"
-            :stroke  "currentColor"
-            :fill    "currentColor"
-            :height  "80%"}
-           (dom/path {:d "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"})))
+            [material-ui.icons :as mui-icon]
+            [material-ui.transitions :as transitions]
+            [material-ui.data-display :as mui-list]
+            [material-ui.inputs :as mui-input]
+            [material-ui.surfaces :as surfaces]))
 
 (defn new-todo [task]
   #:todo{:id    (rand-int 100)
@@ -47,24 +43,31 @@
   {:query         [:todo/id :todo/task :todo/done?]
    :ident         :todo/id
    :initial-state (fn [task] (new-todo task))}
-  (mui/list-item {:onClick   #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})
-                  :data-done done?
-                  :button    true}
-                 (mui/list-item-icon {}
-                                     (mui/checkbox {:edge          "start"
-                                                    :checked       done?
-                                                    :disableRipple true}))
-                 (mui/list-item-text {:primary task})
-                 (mui/list-item-secondary-action {}
-                                                 (mui/icon-button
-                                                   {:onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
-                                                   (mui-icon/delete)))))
+  (let [deleting? (comp/get-state this :deleting?)]
+    (transitions/collapse
+      {:in            (not deleting?)
+       :unmountOnExit true
+       :onExited      #(comp/transact! this [(delete-todo {:todo/id id})])}
+      (dom/div
+        (mui-list/list-item
+          {:onClick   #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})
+           :data-done done?
+           :button    true}
+          (mui-list/list-item-icon nil
+            (mui-input/checkbox {:edge          "start"
+                                 :checked       done?
+                                 :disableRipple true}))
+          (mui-list/list-item-text {:primary task})
+          (mui-list/list-item-secondary-action nil
+            (mui-input/icon-button
+              {:onClick #(comp/set-state! this {:deleting? true})}
+              (mui-icon/delete))))))))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
 (defmutation add-todo [{:keys [todo]}]
-  (action [{:keys [state]}]
-          (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
+  (ok-action [{:keys [state]}]
+             (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
   (remote [env]
           (-> env
               (with-key 'todoish.api.todo/add-todo)
@@ -85,7 +88,7 @@
                        (m/set-value! this :ui/error? true)
                        (comp/transact! this [(add-todo {:todo (new-todo value)})
                                              #?(:cljs (m/set-props {:ui/value ""}))])))}
-    (mui/textfield
+    (mui-input/textfield
       {:margin      "normal"
        :variant     "outlined"
        :fullWidth   true
@@ -96,11 +99,11 @@
        #?@(:cljs [:onChange #(comp/transact!
                                this
                                [(m/set-props {:ui/value  (evt/target-value %)
-                                              :ui/error? false})])
-
-                  :InputProps {:endAdornment (mui/input-adornment
+                                              :ui/error? false})]
+                               {:compressible? true})
+                  :InputProps {:endAdornment (mui-input/input-adornment
                                                {:position "end"}
-                                               (mui/button
+                                               (mui-input/button
                                                  {:color "primary"
                                                   :type  "submit"}
                                                  "Enter"))}])})))
