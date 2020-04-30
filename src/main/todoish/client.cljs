@@ -16,4 +16,4 @@
     (when db
       (log/debug "Initial SSR state found!")
       (reset! (::app/state-atom SPA) db))
-    (app/mount! SPA root/Root "todoish" (when db {:hydrate? true :initial-state? false}))))
+    (app/mount! SPA root/Root "todoish")))

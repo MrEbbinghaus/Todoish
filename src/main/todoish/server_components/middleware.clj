@@ -15,7 +15,7 @@
     [ring.middleware.gzip :refer [wrap-gzip]]
     [ring.util.response :refer [response file-response resource-response]]
     [ring.util.response :as resp]
-    [hiccup.page :refer [html5]]
+    [hiccup.page :refer [html5 include-js include-css]]
     [taoensso.timbre :as log]
     [todoish.ui.root :as ui-root]
     [todoish.application :refer [SPA]]))
@@ -45,19 +45,19 @@
         initial-state-script (ssr/initial-state->script-tag normalized-db)]
     (html5
       [:html {:lang "en"}
-       [:head {:lang "en"}
+       [:head
         [:title "Todoish"]
         [:meta {:charset "utf-8"}]
         [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
-        [:link {:href "css/style.css" :rel "stylesheet"}]
-        #_initial-state-script
+        (include-css "css/style.css")
+        initial-state-script
         [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
         [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
         [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
        [:body
         [:div#todoish
          #_app-html]
-        [:script {:src "js/main/main.js"}]]])))
+        (include-js "js/main/main.js")]])))
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
