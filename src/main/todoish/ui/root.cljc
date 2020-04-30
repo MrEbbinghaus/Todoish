@@ -22,7 +22,23 @@
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]))
 
 #?(:cljs
-   (def transition-group (interop/react-factory #?(:cljs TransitionGroup :default nil))))
+   (do
+     (def transition-group (interop/react-factory TransitionGroup))
+
+     (def dark-mode-matcher
+       (and
+         (-> js/window .-matchMedia)
+         (-> js/window (.matchMedia "(prefers-color-scheme: dark)"))))
+
+     (defn onDarkModeChange [f]
+       (when dark-mode-matcher
+         (.addListener dark-mode-matcher f)))))
+
+(defn dark-mode?
+  "Checks for prefers-color-scheme: dark. (clj always returns true)"
+  []
+  #?(:clj  true
+     :cljs (and dark-mode-matcher (.-matches dark-mode-matcher))))
 
 (defmutation toggle-drawer [{:keys [open?]}]
   (action [{:keys [state]}]
@@ -69,22 +85,25 @@
     (when loading?
       (progress/linear-progress))))
 
-(defsc Root [this {:keys [all-todos ui/new-todo ui/nav-drawer] ::app/keys [active-remotes]}]
+(defsc Root [this {:keys [all-todos ui/new-todo ui/nav-drawer ui/theme] ::app/keys [active-remotes]}]
   {:query [{:all-todos (comp/get-query todo/Todo)}
            {:ui/new-todo (comp/get-query todo/NewTodoField)}
+           :ui/theme
            ::app/active-remotes
            {:ui/nav-drawer (comp/get-query NavDrawer)}]
    :initial-state
           (fn [_] {:ui/new-todo   (comp/get-initial-state todo/NewTodoField)
                    :all-todos     []
+                   :ui/theme      (if (dark-mode?) :dark :light)
                    :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
+
   (theme-provider
-    #?(:cljs {:theme theme/light-theme} :default {})
+    #?(:cljs {:theme (if (dark-mode?) theme/dark-theme theme/light-theme)} :default {})
     (div
       (css-baseline {})
 
       (app-bar {:loading? (:remote active-remotes)})
-      ;:on-menu-click #(open-drawer! this)})
+      ;          :on-menu-click #(open-drawer! this)})
 
       #_(ui-nav-drawer nav-drawer)
 
@@ -93,7 +112,7 @@
         (todo/ui-new-todo-field new-todo)
         (paper
           {}
-          (if-not (empty? all-todos)
+          (if (empty? all-todos)
             (layout/box
               {:p     2
                :mx    "auto"
