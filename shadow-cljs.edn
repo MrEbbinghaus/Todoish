@@ -11,7 +11,7 @@
                                     {:external-config {:ghostwheel {}}}}
 
                        :devtools   {:after-load todoish.client/refresh
-                                    :preloads   [com.fulcrologic.fulcro.inspect.preload todoish.development-preload]}}
+                                    :preloads   [com.fulcrologic.fulcro.inspect.websocket-preload todoish.development-preload]}}
 
           :test       {:target           :browser-test
                        :test-dir         "resources/public/js/test"
