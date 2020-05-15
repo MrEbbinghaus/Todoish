@@ -1,7 +1,7 @@
 
 $enable-responsive-font-sizes: true;
 
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../node_modules/bootstrap/scss/bootstrap";
 //@import url('https://fonts.googleapis.com/css?family=Great+Vibes&display=swap');
 
 #todoish > div {
@@ -46,6 +46,7 @@ ul {
   &__task {
     width: 100%;
     align-self: center;
+    // sd
   }
 
   @include hover-focus {
