@@ -61,26 +61,27 @@
 
 (def ui-nav-drawer (comp/computed-factory NavDrawer))
 
-(defn app-bar [{:keys [loading? on-menu-click]}]
-  {:query [[::app/active-remotes '_]]}
+(defn app-bar [{:keys [loading? on-menu-click] :or {loading? false}}]
   (surfaces/app-bar
     {:position "static"}
-    (toolbar
-      {}
-      (when on-menu-click
-        (inputs/icon-button
-          {:edge      "start"
-           :color     "inherit"
-           :ariaLabel "menu"}
-          (icons/menu {:onClick on-menu-click})))
+    (layout/box {:m "-4px"}
+      (toolbar
+        {}
+        (when on-menu-click
+          (inputs/icon-button
+            {:edge       "start"
+             :color      :inherit
+             :aria-label "menu"
+             :onClick    on-menu-click}
+            (icons/menu {})))
 
-      (typography
-        {:variant "h4"
-         :style   {:fontFamily "'Great Vibes', cursive"
-                   :fontWeight "600"
-                   :flexGrow   1}
-         :noWrap  true}
-        "Todoish"))
+        (typography
+          {:variant :h4
+           :style   {:fontFamily "'Great Vibes', cursive"
+                     :fontWeight 600
+                     :flexGrow   1}
+           :noWrap  true}
+          "Todoish")))
 
     (when loading?
       (progress/linear-progress))))
