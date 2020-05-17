@@ -50,13 +50,11 @@
        :onExited      #(comp/transact! this [(delete-todo {:todo/id id})])}
       (dom/div
         (mui-list/list-item
-          {:onClick   #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})
-           :data-done done?
-           :button    true}
+          {:data-done done?}
           (mui-list/list-item-icon nil
             (mui-input/checkbox {:edge          "start"
                                  :checked       done?
-                                 :disableRipple true}))
+                                 :onClick       #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}))
           (mui-list/list-item-text {:primary task})
           (mui-list/list-item-secondary-action nil
             (mui-input/icon-button
