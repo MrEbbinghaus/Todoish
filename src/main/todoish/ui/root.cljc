@@ -43,31 +43,55 @@
 
 (defmutation toggle-drawer [{:keys [open?]}]
   (action [{:keys [state]}]
-    (swap! state assoc-in [:ui/nav-drawer :ui/open?] open?)))
+    (if (nil? open?)
+      (swap! state update-in [:ui/nav-drawer :ui/open?] not)
+      (swap! state assoc-in [:ui/nav-drawer :ui/open?] open?))))
 
 (defn open-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? true})] {:compressible? true}))
 (defn close-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? false})] {:compressible? true}))
+(defn toggle-drawer! [comp] (comp/transact! comp [(toggle-drawer {})] {:compressible? true}))
 
 (defsc NavDrawer [this {:keys [ui/open?] :or {open? false}}]
   {:query         [:ui/open?]
    :initial-state {:ui/open? false}}
-  (navigation/swipeable-drawer
-    {:anchor  :left
-     :open    open?
-     :onOpen  #(open-drawer! this)
-     :onClose #(close-drawer! this)
-     :PaperProps
-              {:style     {:width 240}
-               :component :aside}}
-    (mui-list {}
-      (dd/list-item {:button true}
-        (dd/list-item-text {:primary "Hello World"})))))
+  (let [drawer
+        (comp/fragment
+          (toolbar)
+          (mui-list {}
+            (dd/list-item {:button true}
+              (dd/list-item-text {:primary "Hello World"}))))]
+    (comp/fragment
+      (layout/hidden
+        {:smUp true}
+        (navigation/swipeable-drawer
+          {:anchor  :left
+           :open    open?
+           :onOpen  #(open-drawer! this)
+           :onClose #(close-drawer! this)
+           :PaperProps
+                    {:style     {:width 240}
+                     :component :aside}}
+          drawer))
+
+      (layout/hidden
+        {:xsDown true}
+        (navigation/swipeable-drawer
+          {:anchor  :left
+           :variant :persistent
+           :open    open?
+           :onOpen  #(open-drawer! this)
+           :onClose #(close-drawer! this)
+           :PaperProps
+                    {:style     {:width 240}
+                     :component :aside}}
+          drawer)))))
 
 (def ui-nav-drawer (comp/computed-factory NavDrawer))
 
 (defn app-bar [{:keys [loading? on-menu-click] :or {loading? false}}]
   (surfaces/app-bar
-    {:position "static"}
+    {:position :sticky
+     :style    {:zIndex 1301}}
     (layout/box {:m "-4px"}
       (toolbar
         {}
@@ -163,18 +187,18 @@
            {:ui/nav-drawer (comp/get-query NavDrawer)}]
    :initial-state
           (fn [_] {:all-todos      []
-                   :ui/theme       (if (dark-mode?) :dark :light)
+                   #?@(:cljs [:ui/theme (if (dark-mode?) theme/dark-theme theme/light-theme)])
                    :ui/root-router (comp/get-initial-state RootRouter)
                    :ui/nav-drawer  (comp/get-initial-state NavDrawer)})}
 
-  (theme-provider
-    #?(:cljs {:theme (get theme/themes theme theme/light-theme)} :default {})
+  (theme-provider {:theme theme}
     (div
       (css-baseline {})
+      (app-bar {:loading?      (:remote active-remotes)
+                :on-menu-click #(toggle-drawer! this)})
       (layout/box
         {:ml        (if (:ui/open? nav-drawer) "240px" 0)
+         :style     {:transition (str "margin " (get theme ["transitions" "duration" "enteringScreen"] "ms"))}
          :component :main}
-        (app-bar {:loading?      (:remote active-remotes)
-                  :on-menu-click #(open-drawer! this)})
         (ui-root-router root-router))
       (ui-nav-drawer nav-drawer))))
