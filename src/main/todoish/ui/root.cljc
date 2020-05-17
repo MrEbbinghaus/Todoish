@@ -36,9 +36,9 @@
          (.addListener dark-mode-matcher f)))))
 
 (defn dark-mode?
-  "Checks for prefers-color-scheme: dark. (clj always returns true)"
+  "Checks for prefers-color-scheme: dark. (clj always returns false)"
   []
-  #?(:clj  true
+  #?(:clj  false
      :cljs (and dark-mode-matcher (.-matches dark-mode-matcher))))
 
 (defmutation toggle-drawer [{:keys [open?]}]
