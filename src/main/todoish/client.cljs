@@ -16,10 +16,5 @@
 (defn ^:export init []
   (log/info "Application starting.")
   (let [db (ssr/get-SSR-initial-state)]
-    (app/mount! SPA root/Root "todoish" {:disable-client-did-mount? (boolean db)})
-    (when db
-      (log/debug "Initial SSR state found!")
-      (mrg/merge! SPA
-        (denormalize/db->tree (comp/get-query root/Root) db db)
-        (comp/get-query root/Root))
-      (app/force-root-render! SPA))))
+    (log/info "Initial db:" db)
+    (app/mount! SPA root/Root "todoish")))

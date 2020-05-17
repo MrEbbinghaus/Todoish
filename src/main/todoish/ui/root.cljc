@@ -57,6 +57,7 @@
   (let [drawer
         (comp/fragment
           (toolbar)
+          (dom/div {:style {:height "4px"}})
           (mui-list {}
             (dd/list-item {:button true}
               (dd/list-item-text {:primary "Hello World"}))))]
@@ -92,27 +93,27 @@
   (surfaces/app-bar
     {:position :sticky
      :style    {:zIndex 1301}}
-    (layout/box {:m "-4px"}
-      (toolbar
-        {}
-        (when on-menu-click
-          (inputs/icon-button
-            {:edge       "start"
-             :color      :inherit
-             :aria-label "menu"
-             :onClick    on-menu-click}
-            (icons/menu {})))
+    (toolbar
+      {}
+      (when on-menu-click
+        (inputs/icon-button
+          {:edge       "start"
+           :color      :inherit
+           :aria-label "menu"
+           :onClick    on-menu-click}
+          (icons/menu {})))
 
-        (typography
-          {:variant :h4
-           :style   {:fontFamily "'Great Vibes', cursive"
-                     :fontWeight 600
-                     :flexGrow   1}
-           :noWrap  true}
-          "Todoish")))
+      (typography
+        {:variant :h4
+         :style   {:fontFamily "'Great Vibes', cursive"
+                   :fontWeight 600
+                   :flexGrow   1}
+         :noWrap  true}
+        "Todoish"))
 
-    (when loading?
-      (progress/linear-progress))))
+    (dom/div {:style {:height "4px"}}
+      (when loading?
+        (progress/linear-progress)))))
 
 (defsc MainTodoList [this {:keys [all-todos ui/new-todo]}]
   {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}
