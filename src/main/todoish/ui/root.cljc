@@ -98,7 +98,7 @@
                    :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
 
   (theme-provider
-    #?(:cljs {:theme (if (dark-mode?) theme/dark-theme theme/light-theme)} :default {})
+    #?(:cljs {:theme (get theme/themes theme theme/light-theme)} :default {})
     (div
       (css-baseline {})
 

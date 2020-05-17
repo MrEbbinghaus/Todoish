@@ -2,9 +2,13 @@
   (:require [material-ui.styles :refer [create-mui-theme]]))
 
 (def light-theme (create-mui-theme
-                   {:palette {:type "light"
+                   {:palette {:type    "light"
                               :primary {:main "#e44232"}}}))
 
 (def dark-theme (create-mui-theme
-                  {:palette {:type "dark"
+                  {:palette {:type    "dark"
                              :primary {:main "#e44232"}}}))
+
+(def themes
+  {:dark  dark-theme
+   :light light-theme})
