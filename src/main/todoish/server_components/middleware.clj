@@ -37,47 +37,44 @@
             (parser {:ring/request request} tx)))
         (handler request)))))
 
-(defn ssr-html [csrf-token app normalized-db root-component-class]
-  (log/debug "Serving index.html")
-  (let [props (dn/db->tree (comp/get-query root-component-class) normalized-db normalized-db)
-        root-factory (comp/factory root-component-class)
-        app-html (binding [comp/*app* app] (dom/render-to-str (root-factory props)))
-        initial-state-script (ssr/initial-state->script-tag normalized-db)]
-    (html5
-      [:html {:lang "en"}
-       [:head
-        [:title "Todoish"]
-        [:meta {:charset "utf-8"}]
-        [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
-        (include-css "css/style.css")
-        initial-state-script
-        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
-        [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-       [:body
-        [:div#todoish
-         #_app-html]
-        (include-js "js/main/main.js")]])))
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
 ;; ================================================================================
-(defn index [csrf-token]
+(defn index
+  ([csrf-token] (index csrf-token nil nil))
+  ([csrf-token initial-state-script] (index csrf-token initial-state-script nil))
+  ([csrf-token initial-state-script initial-html]
+   (html5
+     [:html {:lang "en"}
+      [:head
+       [:title "Todoish"]
+       [:meta {:charset "utf-8"}]
+       [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
+       (include-css "css/style.css")
+       initial-state-script
+       [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
+       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
+       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
+      [:body
+       [:div#todoish
+        initial-html]
+       (include-js "js/main/main.js")]])))
+
+(defn index-with-db [csrf-token normalized-db]
   (log/debug "Serving index.html")
-  (html5
-    [:html {:lang "en"}
-     [:head {:lang "en"}
-      [:title "Todoish"]
-      [:meta {:charset "utf-8"}]
-      [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
-      [:link {:href "css/light.css" :rel "stylesheet"}]
-      [:link {:href "css/dark.css" :rel "stylesheet" :media "(prefers-color-scheme: dark)"}]
-      [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
-      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-     [:body
-      [:div#todoish]
-      [:script {:src "js/main/main.js"}]]]))
+  (let [initial-state-script (ssr/initial-state->script-tag normalized-db)]
+    (index csrf-token initial-state-script nil)))
+
+(defn ssr-html [csrf-token app normalized-db root-component-class]
+  (log/debug "Serving index.html")
+  (let [props (dn/db->tree (comp/get-query root-component-class) normalized-db normalized-db)
+        root-factory (comp/factory root-component-class)]
+    (index
+      csrf-token
+      (ssr/initial-state->script-tag normalized-db)
+      (binding [comp/*app* app]
+        (dom/render-to-str (root-factory props))))))
 
 ;; ================================================================================
 ;; Workspaces can be accessed via shadow's http server on http://localhost:8023/workspaces.html
@@ -106,20 +103,23 @@
   (fn [{:keys [uri anti-forgery-token] :as req}]
     (cond
       (#{"/" "/index.html"} uri)
-      (-> (resp/response
-            (let [normalized-db (ssr/build-initial-state (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) ui-root/Root)]
-              (ssr-html anti-forgery-token SPA
-                        normalized-db
-                        ui-root/Root)))
-          (resp/content-type "text/html"))
+      (-> (index-with-db
+            anti-forgery-token
+            (ssr/build-initial-state
+              (parser {:ring/request req}
+                [{:all-todos
+                  [:todo/id :todo/task :todo/done?]}])
+              ui-root/Root))
+        (resp/response)
+        (resp/content-type "text/html"))
 
       (#{"/ssr.html"} uri)
       (-> (resp/response
             (let [normalized-db (norm/tree->db ui-root/Root (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) true)]
               (ssr-html anti-forgery-token SPA
-                        normalized-db
-                        ui-root/Root)))
-          (resp/content-type "text/html"))
+                normalized-db
+                ui-root/Root)))
+        (resp/content-type "text/html"))
 
       ;; See note above on the `wslive` function.
       (#{"/wslive.html"} uri)
