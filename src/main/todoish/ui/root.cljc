@@ -52,13 +52,16 @@
   {:query         [:ui/open?]
    :initial-state {:ui/open? false}}
   (navigation/swipeable-drawer
-    {:anchor  "left"
+    {:anchor  :left
      :open    open?
      :onOpen  #(open-drawer! this)
-     :onClose #(close-drawer! this)}
+     :onClose #(close-drawer! this)
+     :PaperProps
+              {:style     {:width 240}
+               :component :aside}}
     (mui-list {}
       (dd/list-item {:button true}
-        (dd/list-item-text {:primary "Hello Hello World"})))))
+        (dd/list-item-text {:primary "Hello World"})))))
 
 (def ui-nav-drawer (comp/computed-factory NavDrawer))
 
@@ -168,7 +171,10 @@
     #?(:cljs {:theme (get theme/themes theme theme/light-theme)} :default {})
     (div
       (css-baseline {})
-      (app-bar {:loading?      (:remote active-remotes)
-                :on-menu-click #(open-drawer! this)})
-      (ui-root-router root-router)
+      (layout/box
+        {:ml        (if (:ui/open? nav-drawer) "240px" 0)
+         :component :main}
+        (app-bar {:loading?      (:remote active-remotes)
+                  :on-menu-click #(open-drawer! this)})
+        (ui-root-router root-router))
       (ui-nav-drawer nav-drawer))))
