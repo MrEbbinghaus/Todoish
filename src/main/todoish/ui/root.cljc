@@ -19,6 +19,7 @@
     [material-ui.surfaces :as surfaces :refer [toolbar paper]]
     #?(:cljs [todoish.ui.themes :as theme])
     [taoensso.timbre :as log]
+    [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]))
 
 #?(:cljs
@@ -86,44 +87,88 @@
     (when loading?
       (progress/linear-progress))))
 
-(defsc Root [this {:keys [all-todos ui/new-todo ui/nav-drawer ui/theme] ::app/keys [active-remotes]}]
-  {:query [{:all-todos (comp/get-query todo/Todo)}
-           {:ui/new-todo (comp/get-query todo/NewTodoField)}
-           :ui/theme
+(defsc MainTodoList [this {:keys [all-todos ui/new-todo]}]
+  {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}
+                   {:ui/new-todo (comp/get-query todo/NewTodoField)}]
+   :ident         (fn [] [:page/id :main])
+   :initial-state (fn [_]
+                    {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
+   :route-segment ["home"]
+   :will-enter    (fn [app _] (dr/route-immediate [:page/id :main]))}
+  (ui-container
+    {:maxWidth "lg"}
+    (todo/ui-new-todo-field new-todo)
+    (paper {}
+      (if (empty? all-todos)
+        (layout/box
+          {:p     2
+           :mx    "auto"
+           :color "text.primary"}
+          (typography
+            {:align "center"
+             :color "textSecondary"}
+            "Nothing to do. Congratulations!"))
+        (mui-list nil
+          (->> all-todos
+            (sort-by :todo/done?)
+            (map todo/ui-todo)
+            #?(:cljs (transition-group {:className "todo-list"}))))))))
+
+(defsc LoginPage [this props]
+  {:query         []
+   :ident         (fn [] [:page/id :login])
+   :route-segment ["login"]
+   :will-enter    (fn [app _] (dr/route-immediate [:page/id :login]))}
+  (layout/ui-container {:maxWidth "sm"}
+    (css-baseline {})
+    (layout/box {:m 3}
+      (paper {}
+        (layout/box {:p 3}
+          (dom/form {:noValidate true}
+            (typography
+              {:align   "center"
+               :variant "h5"}
+              "Sign in")
+            (inputs/textfield
+              {:label     "E-Mail"
+               :type      :email
+               :variant   :outlined
+               :fullWidth true
+               :margin    :normal})
+            (inputs/textfield
+              {:label     "Password"
+               :type      :password
+               :variant   :outlined
+               :fullWidth true
+               :margin    :normal})
+            (inputs/button
+              {:variant   :contained
+               :color     :primary
+               :fullWidth true
+               :style     {:margin-top "1rem"}}
+              "Sign in")))))))
+
+(defrouter RootRouter [this props]
+  {:router-targets [MainTodoList]})
+
+(def ui-root-router (comp/factory RootRouter))
+
+(defsc Root [this {:keys [ui/nav-drawer ui/theme ui/root-router] ::app/keys [active-remotes]}]
+  {:query [:ui/theme
            ::app/active-remotes
+           {:ui/root-router (comp/get-query RootRouter)}
            {:ui/nav-drawer (comp/get-query NavDrawer)}]
    :initial-state
-          (fn [_] {:ui/new-todo   (comp/get-initial-state todo/NewTodoField)
-                   :all-todos     []
-                   :ui/theme      (if (dark-mode?) :dark :light)
-                   :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
+          (fn [_] {:all-todos      []
+                   :ui/theme       (if (dark-mode?) :dark :light)
+                   :ui/root-router (comp/get-initial-state RootRouter)
+                   :ui/nav-drawer  (comp/get-initial-state NavDrawer)})}
 
   (theme-provider
     #?(:cljs {:theme (get theme/themes theme theme/light-theme)} :default {})
     (div
       (css-baseline {})
-
-      (app-bar {:loading? (:remote active-remotes)})
-      ;          :on-menu-click #(open-drawer! this)})
-
-      #_(ui-nav-drawer nav-drawer)
-
-      (ui-container
-        {:maxWidth "lg"}
-        (todo/ui-new-todo-field new-todo)
-        (paper
-          {}
-          (if (empty? all-todos)
-            (layout/box
-              {:p     2
-               :mx    "auto"
-               :color "text.primary"}
-              (typography
-                {:align "center"
-                 :color "textSecondary"}
-                "Nothing to do. Congratulations!"))
-            (->> all-todos
-              (sort-by :todo/done?)
-              (map todo/ui-todo)
-              #?(:cljs (transition-group {:className "todo-list"}))
-              (mui-list nil))))))))
+      (app-bar {:loading?      (:remote active-remotes)
+                :on-menu-click #(open-drawer! this)})
+      (ui-root-router root-router)
+      (ui-nav-drawer nav-drawer))))
