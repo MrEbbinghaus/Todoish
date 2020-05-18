@@ -10,6 +10,36 @@
             [material-ui.utils :as mutils]
             [material-ui.inputs :as inputs]))
 
+
+(defn wide-textfield
+  "Outlined textfield on full width with normal margins. Takes the same props as `material-ui.inputs/textfield`"
+  [props]
+  (inputs/textfield
+    (merge
+      {:variant   :outlined
+       :fullWidth true
+       :margin    :normal}
+      props)))
+
+(defn login-form [{:keys [on-submit]}]
+  (dom/form
+    {:noValidate true
+     :onSubmit   on-submit}
+    (dd/typography
+      {:align   "center"
+       :variant "h5"}
+      "Sign in")
+    (wide-textfield {:label "E-Mail"
+                     :type  :email})
+    (wide-textfield {:label "Password"
+                     :type  :password})
+    (inputs/button {:variant   :contained
+                    :color     :primary
+                    :type      :submit
+                    :fullWidth true
+                    :style     {:marginTop "1rem"}}
+      "Sign in")))
+
 (defsc LoginPage [this props]
   {:query         []
    :ident         (fn [] [:page/id :login])
@@ -20,31 +50,7 @@
     (layout/box {:m 3}
       (surfaces/paper {}
         (layout/box {:p 3}
-          (dom/form
-            {:noValidate true
-             :onSubmit   (fn submit-login [e]
-                           (evt/prevent-default! e)
-                           (dr/change-route! this (dr/path-to todo-app/TodoApp)))}
-            (dd/typography
-              {:align   "center"
-               :variant "h5"}
-              "Sign in")
-            (inputs/textfield
-              {:label     "E-Mail"
-               :type      :email
-               :variant   :outlined
-               :fullWidth true
-               :margin    :normal})
-            (inputs/textfield
-              {:label     "Password"
-               :type      :password
-               :variant   :outlined
-               :fullWidth true
-               :margin    :normal})
-            (inputs/button
-              {:variant   :contained
-               :color     :primary
-               :type      :submit
-               :fullWidth true
-               :style     {:marginTop "1rem"}}
-              "Sign in")))))))
+          (login-form {:on-submit
+                       (fn submit-login [e]
+                         (evt/prevent-default! e)
+                         (dr/change-route! this (dr/path-to todo-app/TodoApp)))}))))))
