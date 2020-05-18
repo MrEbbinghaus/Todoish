@@ -5,6 +5,7 @@
      :as dom :refer [div ul li p h1 h3 form button input span]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.fulcro.dom.events :as evt]
     [todoish.models.todo :as todo]
     [material-ui.layout :as layout :refer [ui-container]]
     [material-ui.utils :refer [css-baseline]]
@@ -42,10 +43,11 @@
      :cljs (and dark-mode-matcher (.-matches dark-mode-matcher))))
 
 (defmutation toggle-drawer [{:keys [open?]}]
-  (action [{:keys [state]}]
-    (if (nil? open?)
-      (swap! state update-in [:ui/nav-drawer :ui/open?] not)
-      (swap! state assoc-in [:ui/nav-drawer :ui/open?] open?))))
+  (action [{:keys [state ref] :as a}]
+    (let [nav-drawer-target [:component/id :todo-app :ui/nav-drawer :ui/open?]]
+      (if (nil? open?)
+        (swap! state update-in nav-drawer-target not)
+        (swap! state assoc-in nav-drawer-target open?)))))
 
 (defn open-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? true})] {:compressible? true}))
 (defn close-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? false})] {:compressible? true}))
@@ -121,7 +123,7 @@
    :ident         (fn [] [:page/id :main])
    :initial-state (fn [_]
                     {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
-   :route-segment ["home"]
+   :route-segment [""]
    :will-enter    (fn [app _] (dr/route-immediate [:page/id :main]))}
   (ui-container
     {:maxWidth "lg"}
@@ -142,6 +144,34 @@
             (map todo/ui-todo)
             #?(:cljs (transition-group {:className "todo-list"}))))))))
 
+(defrouter ContentRouter [this props]
+  {:router-targets [MainTodoList]})
+
+(def ui-content-router (comp/factory ContentRouter))
+
+(defsc TodoApp [this {:keys [ui/theme ui/nav-drawer ui/content-router] ::app/keys [active-remotes]}]
+  {:query         [[::app/active-remotes '_]
+                   [:ui/theme '_]
+                   {:ui/content-router (comp/get-query ContentRouter)}
+                   {:ui/nav-drawer (comp/get-query NavDrawer)}]
+   :ident         (fn [] [:page/id :todo-app])
+   :initial-state (fn [_] {:all-todos         []
+                           :ui/content-router (comp/get-initial-state ContentRouter)
+                           :ui/nav-drawer     (comp/get-initial-state NavDrawer)})
+   :route-segment ["home"]
+   :will-enter    (fn [app _] (dr/route-immediate [:component/id :todo-app]))}
+  (div
+    (css-baseline {})
+    (app-bar {:loading?      (:remote active-remotes)
+              :on-menu-click #(toggle-drawer! this)})
+    (layout/box
+      {:ml        (if (:ui/open? nav-drawer) "240px" 0)
+       :style     {:color      "black"
+                   :transition (str "margin " (get-in theme [:transitions :duration :enteringScreen] 225) "ms")}
+       :component :main}
+      (ui-content-router content-router))
+    (ui-nav-drawer nav-drawer)))
+
 (defsc LoginPage [this props]
   {:query         []
    :ident         (fn [] [:page/id :login])
@@ -152,7 +182,13 @@
     (layout/box {:m 3}
       (paper {}
         (layout/box {:p 3}
-          (dom/form {:noValidate true}
+          (dom/form
+            {:noValidate true
+             :onSubmit   (fn submit-login [e]
+                           (evt/prevent-default! e)
+                           (log/info "Sign in!")
+                           (log/info "Routing to: " (dr/path-to 'TodoApp))
+                           (dr/change-route! this (dr/path-to 'TodoApp)))}
             (typography
               {:align   "center"
                :variant "h5"}
@@ -172,38 +208,27 @@
             (inputs/button
               {:variant   :contained
                :color     :primary
+               :type      :submit
                :fullWidth true
-               :style     {:margin-top "1rem"}}
+               :style     {:marginTop "1rem"}}
               "Sign in")))))))
 
 (defrouter RootRouter [this props]
-  {:router-targets [MainTodoList]})
+  {:router-targets [LoginPage TodoApp]})
 
 (def ui-root-router (comp/factory RootRouter))
 
-(defsc Root [this {:keys [ui/nav-drawer ui/theme ui/root-router] ::app/keys [active-remotes]}]
+(defsc Root [this {:keys [ui/theme ui/root-router]}]
   {:query [:ui/theme
-           ::app/active-remotes
-           {:ui/root-router (comp/get-query RootRouter)}
-           {:ui/nav-drawer (comp/get-query NavDrawer)}]
+           {:ui/root-router (comp/get-query RootRouter)}]
    :initial-state
-          (fn [_] {:all-todos []
+          (fn [_] {:ui/root-router (comp/get-initial-state RootRouter)
                    #?@(:cljs [:ui/theme (js->clj
                                           (if (dark-mode?)
                                             theme/dark-theme
                                             theme/light-theme)
-                                          :keywordize-keys true)])
-                   :ui/root-router (comp/get-initial-state RootRouter)
-                   :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
+                                          :keywordize-keys true)])})}
+
+
   (theme-provider {:theme theme}
-    (div
-      (css-baseline {})
-      (app-bar {:loading?      (:remote active-remotes)
-                :on-menu-click #(toggle-drawer! this)})
-      (layout/box
-        {:ml        (if (:ui/open? nav-drawer) "240px" 0)
-         :style     {:color      "black"
-                     :transition (str "margin " (get-in theme [:transitions :duration :enteringScreen] 225) "ms")}
-         :component :main}
-        (ui-root-router root-router))
-      (ui-nav-drawer nav-drawer))))
+    (ui-root-router root-router)))
