@@ -50,15 +50,18 @@
        :onExited      #(comp/transact! this [(delete-todo {:todo/id id})])}
       (dom/div
         (mui-list/list-item
-          {:data-done done?}
+          {:data-done done?
+           :button    true}
           (mui-list/list-item-icon nil
-            (mui-input/checkbox {:edge          "start"
-                                 :checked       done?
-                                 :onClick       #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}))
+            (mui-input/checkbox
+              {:edge    :start
+               :checked done?
+               :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}))
           (mui-list/list-item-text {:primary task})
           (mui-list/list-item-secondary-action nil
             (mui-input/icon-button
-              {:onClick #(comp/set-state! this {:deleting? true})}
+              {:onClick    #(comp/set-state! this {:deleting? true})
+               :aria-label "delete"}
               (mui-icon/delete))))))))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
