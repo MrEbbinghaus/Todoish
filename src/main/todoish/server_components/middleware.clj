@@ -17,7 +17,6 @@
     [ring.util.response :as resp]
     [hiccup.page :refer [html5 include-js include-css]]
     [taoensso.timbre :as log]
-    [todoish.ui.root :as ui-root]
     [todoish.application :refer [SPA]]))
 
 (def ^:private not-found-handler
@@ -103,22 +102,8 @@
   (fn [{:keys [uri anti-forgery-token] :as req}]
     (cond
       (#{"/" "/index.html"} uri)
-      (-> (index-with-db
-            anti-forgery-token
-            (ssr/build-initial-state
-              (parser {:ring/request req}
-                [{:all-todos
-                  [:todo/id :todo/task :todo/done?]}])
-              ui-root/Root))
+      (-> (index anti-forgery-token)
         (resp/response)
-        (resp/content-type "text/html"))
-
-      (#{"/ssr.html"} uri)
-      (-> (resp/response
-            (let [normalized-db (norm/tree->db ui-root/Root (parser {:ring/request req} [{:all-todos [:todo/id :todo/task :todo/done?]}]) true)]
-              (ssr-html anti-forgery-token SPA
-                normalized-db
-                ui-root/Root)))
         (resp/content-type "text/html"))
 
       ;; See note above on the `wslive` function.
