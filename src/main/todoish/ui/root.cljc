@@ -187,11 +187,14 @@
            {:ui/root-router (comp/get-query RootRouter)}
            {:ui/nav-drawer (comp/get-query NavDrawer)}]
    :initial-state
-          (fn [_] {:all-todos      []
-                   #?@(:cljs [:ui/theme (if (dark-mode?) theme/dark-theme theme/light-theme)])
+          (fn [_] {:all-todos []
+                   #?@(:cljs [:ui/theme (js->clj
+                                          (if (dark-mode?)
+                                            theme/dark-theme
+                                            theme/light-theme)
+                                          :keywordize-keys true)])
                    :ui/root-router (comp/get-initial-state RootRouter)
-                   :ui/nav-drawer  (comp/get-initial-state NavDrawer)})}
-
+                   :ui/nav-drawer (comp/get-initial-state NavDrawer)})}
   (theme-provider {:theme theme}
     (div
       (css-baseline {})
@@ -199,7 +202,8 @@
                 :on-menu-click #(toggle-drawer! this)})
       (layout/box
         {:ml        (if (:ui/open? nav-drawer) "240px" 0)
-         :style     {:transition (str "margin " (get theme ["transitions" "duration" "enteringScreen"] "ms"))}
+         :style     {:color      "black"
+                     :transition (str "margin " (get-in theme [:transitions :duration :enteringScreen] 225) "ms")}
          :component :main}
         (ui-root-router root-router))
       (ui-nav-drawer nav-drawer))))
