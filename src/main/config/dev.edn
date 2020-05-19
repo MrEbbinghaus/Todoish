@@ -1,8 +1,9 @@
 {:taoensso.timbre/logging-config {:level :debug}
  :ring.middleware/defaults-config
-                                 {:security  {:anti-forgery   false
-                                              :hsts           true
-                                              :ssl-redirect   false
-                                              :frame-options  :sameorigin
-                                              :xss-protection {:enable? false
-                                                               :mode    :block}}}}
+                                 {:security {:anti-forgery   false
+                                             :hsts           true
+                                             :ssl-redirect   false
+                                             :frame-options  :sameorigin
+                                             :xss-protection {:enable? false
+                                                              :mode    :block}}}
+ :db                             {:uri "datahike:file:///tmp/example"}}

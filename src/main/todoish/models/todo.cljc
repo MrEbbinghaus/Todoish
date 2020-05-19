@@ -7,6 +7,7 @@
             [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
             [com.fulcrologic.fulcro.algorithms.merge :as mrg]
             [com.fulcrologic.fulcro.algorithms.data-targeting :as targeting]
+            [com.fulcrologic.fulcro.algorithms.tempid :as tempid]
             [com.fulcrologic.fulcro.algorithms.normalized-state :as norm-state]
             [clojure.string :as str]
             [taoensso.timbre :as log]
@@ -32,9 +33,9 @@
   (remote [env]
     (with-key env 'todoish.api.todo/delete-todo)))
 
-(defmutation toggle-todo [{:todo/keys [id]}]
+(defmutation update-todo-done [{:todo/keys [id done?]}]
   (action [{:keys [state]}]
-    (swap! state update-in [:todo/id id] update :todo/done? not))
+    (swap! state assoc-in [:todo/id id :todo/done?] done?))
   (remote [env]
     (with-key env 'todoish.api.todo/toggle-todo)))
 ;endregion
@@ -56,7 +57,9 @@
             (mui-input/checkbox
               {:edge    :start
                :checked done?
-               :onClick #(comp/transact! this [(toggle-todo {:todo/id id})] {:refresh [:all-todos]})}))
+               :onClick #(comp/transact! this [(update-todo-done {:todo/id id
+                                                                  :todo/done? (not done?)})]
+                           {:refresh [:all-todos]})}))
           (mui-list/list-item-text {:primary task})
           (mui-list/list-item-secondary-action nil
             (mui-input/icon-button
@@ -68,12 +71,12 @@
 
 (defmutation add-todo [{:keys [todo]}]
   (ok-action [{:keys [state]}]
-             (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
+    (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
   (remote [env]
-          (-> env
-              (with-key 'todoish.api.todo/add-todo)
-              (m/with-target (targeting/prepend-to [:all-todos]))
-              (m/returning Todo))))
+    (-> env
+      (with-key 'todoish.api.todo/add-todo)
+      (m/with-target (targeting/prepend-to [:all-todos]))
+      (m/returning Todo))))
 
 ;; New Todo Section
 
@@ -82,7 +85,7 @@
    :ident         (fn [] [:component/id :new-todo])
    :initial-state {:ui/value "" :ui/error? false}}
   (form
-    {:autoComplete "off"
+    {:autoComplete :off
      :onSubmit     (fn [e]
                      (evt/prevent-default! e)
                      (if (str/blank? value)

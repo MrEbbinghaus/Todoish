@@ -48,9 +48,10 @@
 (defn build-parser []
   (let [real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
-                       ::p/env     {::p/reader               [p/map-reader pc/parallel-reader
-                                                              pc/open-ident-reader p/env-placeholder-reader]
-                                    ::p/placeholder-prefixes #{">"}}
+                       ::p/env     {::p/reader                 [p/map-reader pc/parallel-reader
+                                                                pc/open-ident-reader p/env-placeholder-reader]
+                                    ::p/placeholder-prefixes   #{">"}
+                                    ::pc/mutation-join-globals [:tempids]}
                        ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
@@ -63,7 +64,6 @@
                                                            :config config)))
                                     (preprocess-parser-plugin log-requests)
                                     p/error-handler-plugin
-                                    p/request-cache-plugin
                                     (p/post-process-parser-plugin p/elide-not-found)
                                     p/trace-plugin]})
         ;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.

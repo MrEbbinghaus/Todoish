@@ -13,8 +13,8 @@
            http-kit                          {:mvn/version "2.3.0"}
            mount                             {:mvn/version "0.1.16"}
            org.clojure/core.async            {:mvn/version "1.2.603"}
-
            clj-commons/pushy                 {:mvn/version "0.3.10"}
+           io.replikativ/datahike            {:mvn/version "0.2.1"}
 
            ring/ring-core                    {:mvn/version "1.8.1"}
            ring/ring-defaults                {:mvn/version "0.3.2"}}
