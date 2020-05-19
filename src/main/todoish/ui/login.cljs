@@ -49,7 +49,7 @@
   {:query         []
    :ident         (fn [] [:page/id :signup])
    :route-segment ["signup"]}
-  (layout/ui-container {:maxWidth "sm"}
+  (layout/container {:maxWidth "sm"}
     (mutils/css-baseline {})
     (layout/box {:mt 8}
       (surfaces/paper {}
@@ -88,7 +88,7 @@
   {:query         []
    :ident         (fn [] [:page/id :login])
    :route-segment ["login"]}
-  (layout/ui-container {:maxWidth "sm"}
+  (layout/container {:maxWidth "sm"}
     (mutils/css-baseline {})
     (layout/box {:mt 8}
       (surfaces/paper {}

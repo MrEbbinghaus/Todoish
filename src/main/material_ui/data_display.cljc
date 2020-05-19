@@ -9,7 +9,7 @@
          ["@material-ui/core/ListItemSecondaryAction" :default ListItemSecondaryAction]
          ["@material-ui/core/Typography" :default Typography]])))
 
-(def mui-list (interop/react-factory #?(:cljs List :clj nil)))
+(def list (interop/react-factory #?(:cljs List :clj nil)))
 (def list-item (interop/react-factory #?(:cljs ListItem :clj nil)))
 (def list-item-text (interop/react-factory #?(:cljs ListItemText :clj nil)))
 (def list-item-icon (interop/react-factory #?(:cljs ListItemIcon :clj nil)))

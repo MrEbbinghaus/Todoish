@@ -3,16 +3,14 @@
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h1 h3 form button input span]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom.events :as evt]
-    [material-ui.layout :as layout :refer [ui-container]]
+    [material-ui.layout :as layout :refer [container]]
     [material-ui.utils :refer [css-baseline]]
     [material-ui.styles :refer [theme-provider prefers-dark?]]
     [todoish.ui.themes :as theme]
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [todoish.ui.todo-app :as todo-app]
-    [todoish.ui.login :as login]
-    [todoish.routing :as routing]
-    [clojure.string :as str]))
+    [todoish.ui.login :as login]))
 
 
 (def dark-mode-matcher

@@ -25,7 +25,7 @@
                     {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
    :route-segment [""]
    :will-enter    (fn [app _] (dr/route-immediate [:page/id :main]))}
-  (layout/ui-container
+  (layout/container
     {:maxWidth "lg"}
     (todo/ui-new-todo-field new-todo)
     (surfaces/paper {}
@@ -38,7 +38,7 @@
             {:align "center"
              :color "textSecondary"}
             "Nothing to do. Congratulations!"))
-        (dd/mui-list nil
+        (dd/list nil
           (->> all-todos
             (sort-by :todo/done?)
             (map todo/ui-todo)

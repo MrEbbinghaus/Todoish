@@ -25,7 +25,7 @@
         (comp/fragment
           (surfaces/toolbar)
           (dom/div {:style {:height "4px"}})
-          (dd/mui-list {}
+          (dd/list {}
             (dd/list-item {:button true}
               (dd/list-item-text {:primary "Hello World"}))))]
     (comp/fragment
