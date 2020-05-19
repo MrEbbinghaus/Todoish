@@ -8,7 +8,12 @@
             [todoish.ui.todo-app :as todo-app]
             [material-ui.data-display :as dd]
             [material-ui.utils :as mutils]
-            [material-ui.inputs :as inputs]))
+            [material-ui.inputs :as inputs]
+            [taoensso.timbre :as log]
+            [todoish.routing :as routing]
+            [material-ui.navigation :as navigation]))
+
+(declare LoginPage)
 
 
 (defn wide-textfield
@@ -21,7 +26,7 @@
        :margin    :normal}
       props)))
 
-(defn login-form [{:keys [on-submit]}]
+(defn sign-in-form [{:keys [on-submit]}]
   (dom/form
     {:noValidate true
      :onSubmit   on-submit}
@@ -40,17 +45,69 @@
                     :style     {:marginTop "1rem"}}
       "Sign in")))
 
+(defsc SignUpPage [this props]
+  {:query         []
+   :ident         (fn [] [:page/id :signup])
+   :route-segment ["signup"]}
+  (layout/ui-container {:maxWidth "sm"}
+    (mutils/css-baseline {})
+    (layout/box {:mt 8}
+      (surfaces/paper {}
+        (layout/box {:p 3}
+          (dom/form
+            {:noValidate true}
+            (dd/typography
+              {:align   "center"
+               :variant "h5"}
+              "Sign up")
+            (wide-textfield {:label "E-Mail"
+                             :type  :email})
+            (wide-textfield {:label "Password"
+                             :type  :password})
+            (inputs/button {:variant   :contained
+                            :color     :primary
+                            :type      :submit
+                            :fullWidth true
+                            :style     {:marginTop "1rem"}}
+              "Sign up")
+            (layout/box {:mt "1rem"}
+              (layout/grid
+                {:container true
+                 :justify   :flex-end}
+                (layout/grid {:item true}
+                  (navigation/link
+                    {:variant :body2
+                     :href    "#"
+                     :onClick (fn [e]
+                                (evt/prevent-default! e)
+                                (comp/transact! this [(routing/route-to {:path (dr/path-to LoginPage)})]))}
+                    "Already have an account? Sign In"))))))))))
+
+
 (defsc LoginPage [this props]
   {:query         []
    :ident         (fn [] [:page/id :login])
-   :route-segment ["login"]
-   :will-enter    (fn [app _] (dr/route-immediate [:page/id :login]))}
+   :route-segment ["login"]}
   (layout/ui-container {:maxWidth "sm"}
     (mutils/css-baseline {})
-    (layout/box {:m 3}
+    (layout/box {:mt 8}
       (surfaces/paper {}
         (layout/box {:p 3}
-          (login-form {:on-submit
-                       (fn submit-login [e]
-                         (evt/prevent-default! e)
-                         (dr/change-route! this (dr/path-to todo-app/TodoApp)))}))))))
+          (sign-in-form {:on-submit
+                         (fn submit-login [e]
+                           (evt/prevent-default! e)
+                           (comp/transact! this [(routing/route-to {:path (dr/path-to todo-app/TodoApp)})]))})
+          (layout/box {:mt "1rem"}
+            (layout/grid
+              {:container true
+               :justify   :space-between}
+              (layout/grid {:item true :xs true}
+                (navigation/link {:variant :body2} "Forgot password?"))
+              (layout/grid {:item true}
+                (navigation/link
+                  {:variant :body2
+                   :href    "#"
+                   :onClick (fn [e]
+                              (evt/prevent-default! e)
+                              (comp/transact! this [(routing/route-to {:path (dr/path-to SignUpPage)})]))}
+                  "Don't have an account? Sign Up")))))))))

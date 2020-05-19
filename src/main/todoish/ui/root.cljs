@@ -10,7 +10,9 @@
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [todoish.ui.todo-app :as todo-app]
-    [todoish.ui.login :as login]))
+    [todoish.ui.login :as login]
+    [todoish.routing :as routing]
+    [clojure.string :as str]))
 
 
 (def dark-mode-matcher
@@ -28,8 +30,13 @@
   (and dark-mode-matcher (.-matches dark-mode-matcher)))
 
 
-(defrouter RootRouter [this props]
-  {:router-targets [login/LoginPage todo-app/TodoApp]})
+(defrouter RootRouter [this {:keys [current-state]}]
+  {:router-targets [login/LoginPage todo-app/TodoApp login/SignUpPage]}
+  (case current-state
+    :pending (dom/div "Loading...")
+    :failed (dom/div "Failed!")
+    ;; default will be used when the current state isn't yet set
+    (dom/div "No route selected.")))
 
 (def ui-root-router (comp/factory RootRouter))
 

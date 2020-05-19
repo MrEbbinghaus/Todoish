@@ -101,15 +101,17 @@
 (defn wrap-html-routes [ring-handler]
   (fn [{:keys [uri anti-forgery-token] :as req}]
     (cond
-      (#{"/" "/index.html"} uri)
+      ;; See note above on the `wslive` function.
+      (#{"/wslive.html"} uri)
+      (-> (resp/response (wslive anti-forgery-token))
+        (resp/content-type "text/html"))
+
+      (or (#{"/" "/index.html"} uri)
+        (not (#{"/api" "/wslive.html"} uri)))
       (-> (index anti-forgery-token)
         (resp/response)
         (resp/content-type "text/html"))
 
-      ;; See note above on the `wslive` function.
-      (#{"/wslive.html"} uri)
-      (-> (resp/response (wslive anti-forgery-token))
-          (resp/content-type "text/html"))
 
       :else
       (ring-handler req))))
