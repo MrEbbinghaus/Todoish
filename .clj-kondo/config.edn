@@ -26,7 +26,8 @@
            :unused-namespace    {:level :off}
            :consistent-alias    {;; warn when alias for clojure.string is
                                  ;; different from str
-                                 :aliases {com.fulcrologic.fulcro.components              comp
+                                 :aliases {clojure.string                                 str
+                                           com.fulcrologic.fulcro.components              comp
                                            com.fulcrologic.fulcro.mutations               m
                                            clojure.spec.alpha                             s
                                            taoensso.timbre                                log

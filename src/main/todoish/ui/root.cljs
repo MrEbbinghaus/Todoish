@@ -6,11 +6,12 @@
     [material-ui.layout :as layout :refer [container]]
     [material-ui.utils :refer [css-baseline]]
     [material-ui.styles :refer [theme-provider prefers-dark?]]
-    [todoish.ui.themes :as theme]
+    [todoish.ui.themes :as themes]
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [todoish.ui.todo-app :as todo-app]
-    [todoish.ui.login :as login]))
+    [todoish.ui.login :as login]
+    [com.fulcrologic.fulcro-css.css-injection :as inj]))
 
 
 (def dark-mode-matcher
@@ -43,12 +44,7 @@
            {:ui/root-router (comp/get-query RootRouter)}]
    :initial-state
           (fn [_] {:ui/root-router (comp/get-initial-state RootRouter)
-                   :ui/theme       (js->clj
-                                     (if (dark-mode?)
-                                       theme/dark-theme
-                                       theme/light-theme)
-                                     :keywordize-keys true)})}
-
-
-  (theme-provider {:theme theme}
+                   :ui/theme       (if (dark-mode?) :dark :light)})}
+  (theme-provider {:theme (themes/get-mui-theme theme)}
+    (inj/style-element {:component Root})
     (ui-root-router root-router)))

@@ -9,7 +9,8 @@
                [todoish.ui.todo-app :as todo-app]
                [todoish.routing :as routing]])
     [taoensso.timbre :as log]
-    [com.fulcrologic.fulcro.components :as comp]))
+    [com.fulcrologic.fulcro.components :as comp]
+    [com.fulcrologic.fulcro-css.css :as css]))
 
 #?(:cljs
    (defn client-did-mount [app]
@@ -25,4 +26,7 @@
 
 (defonce SPA (app/fulcro-app
                #?(:cljs {:client-did-mount client-did-mount
-                         :remotes          {:remote (net/fulcro-http-remote {:url "/api"})}})))
+                         :remotes          {:remote (net/fulcro-http-remote {:url "/api"})}
+                         :props-middleware (comp/wrap-update-extra-props
+                                             (fn [cls extra-props]
+                                               (merge extra-props (css/get-classnames cls))))})))
