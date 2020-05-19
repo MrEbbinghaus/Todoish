@@ -55,11 +55,12 @@
 (def ui-content-router (comp/factory ContentRouter))
 
 
-(defsc AppBar [this {::app/keys [active-remotes]}
+(defsc AppBar [this
+               {::app/keys [active-remotes]}
                {:keys [on-menu-click]}
                {:keys [appbar]}]
-  {:query [[::app/active-remotes '_]]
-   :css   [[:.appbar {:zIndex (inc (get-in themes/shared [:zIndex :modal]))}]]
+  {:query         [[::app/active-remotes '_]]
+   :css           [[:.appbar {:z-index (inc (get-in themes/shared [:zIndex :modal]))}]]
    :initial-state {}}
   (let [loading? (boolean active-remotes)]
     (surfaces/app-bar
