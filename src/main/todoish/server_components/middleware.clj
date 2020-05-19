@@ -50,7 +50,6 @@
        [:title "Todoish"]
        [:meta {:charset "utf-8"}]
        [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
-       (include-css "css/style.css")
        initial-state-script
        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
        [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
