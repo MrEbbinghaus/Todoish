@@ -1,7 +1,5 @@
 (ns todoish.models.todo
-  (:require [#?(:cljs com.fulcrologic.fulcro.dom
-                :clj  com.fulcrologic.fulcro.dom-server)
-             :as dom :refer [div ul li p h1 h3 form button input span]]
+  (:require [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h1 h3 form button input span]]
             [com.fulcrologic.fulcro.dom.events :as evt]
             [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
             [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
@@ -18,7 +16,7 @@
             [material-ui.surfaces :as surfaces]))
 
 (defn new-todo [task]
-  #:todo{:id    (rand-int 100)
+  #:todo{:id    (tempid/tempid)
          :task  task
          :done? false})
 
@@ -57,10 +55,12 @@
             (mui-input/checkbox
               {:edge    :start
                :checked done?
-               :onClick #(comp/transact! this [(update-todo-done {:todo/id id
-                                                                  :todo/done? (not done?)})]
+               :onClick #(comp/transact! this
+                           [(update-todo-done {:todo/id    id
+                                               :todo/done? (not done?)})]
                            {:refresh [:all-todos]})}))
-          (mui-list/list-item-text {:primary task})
+          (mui-list/list-item-text
+            {:primary task})
           (mui-list/list-item-secondary-action nil
             (mui-input/icon-button
               {:onClick    #(comp/set-state! this {:deleting? true})
@@ -91,7 +91,7 @@
                      (if (str/blank? value)
                        (m/set-value! this :ui/error? true)
                        (comp/transact! this [(add-todo {:todo (new-todo value)})
-                                             #?(:cljs (m/set-props {:ui/value ""}))])))}
+                                             (m/set-props {:ui/value ""})])))}
     (mui-input/textfield
       {:margin      "normal"
        :variant     "outlined"
@@ -100,16 +100,16 @@
        :error       error?
        :helperText  (when error? "There is always something to do!")
        :placeholder "What needs to be done?"
-       #?@(:cljs [:onChange #(comp/transact!
-                               this
-                               [(m/set-props {:ui/value  (evt/target-value %)
-                                              :ui/error? false})]
-                               {:compressible? true})
-                  :InputProps {:endAdornment (mui-input/input-adornment
-                                               {:position "end"}
-                                               (mui-input/button
-                                                 {:color "primary"
-                                                  :type  "submit"}
-                                                 "Enter"))}])})))
+       :onChange    #(comp/transact!
+                       this
+                       [(m/set-props {:ui/value  (evt/target-value %)
+                                      :ui/error? false})]
+                       {:compressible? true})
+       :InputProps  {:endAdornment (mui-input/input-adornment
+                                     {:position "end"}
+                                     (mui-input/button
+                                       {:color "primary"
+                                        :type  "submit"}
+                                       "Enter"))}})))
 
 (def ui-new-todo-field (comp/factory NewTodoField))
