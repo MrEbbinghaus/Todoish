@@ -12,6 +12,8 @@
            mount.core/defstate                                      clojure.core/def
            com.fulcrologic.guardrails.core/>defn                    clojure.core/defn
            com.fulcrologic.guardrails.core/>defn-                   clojure.core/defn-
+           ghostwheel.core/>defn                                    clojure.core/defn
+           ghostwheel.core/>defn-                                   clojure.core/defn-
            nubank.workspaces.core/defcard                           clojure.core/def
            com.wsscode.pathom.connect/defresolver                   clojure.core/defn
            com.wsscode.pathom.connect/defmutation                   clojure.core/defn
@@ -19,8 +21,8 @@
  :linters {:misplaced-docstring {:level :error}
            :not-empty?          {:level :off}
            :unresolved-symbol   {:exclude
-                                   [(com.fulcrologic.fulcro.mutations/defmutation)
-                                    (fulcro-spec.core/provided!)]}
+                                 [(com.fulcrologic.fulcro.mutations/defmutation)
+                                  (fulcro-spec.core/provided!)]}
            :unused-binding      {:level :off}
            :unused-referred-var {:level :off}
            :single-key-in       {:level :warning}
