@@ -62,7 +62,7 @@
   {:query         [[::app/active-remotes '_]]
    :css           [[:.appbar {:z-index (inc (get-in themes/shared [:zIndex :modal]))}]]
    :initial-state {}}
-  (let [loading? (boolean active-remotes)]
+  (let [loading? (not (empty? active-remotes))]
     (surfaces/app-bar
       {:position  :sticky
        :className appbar}

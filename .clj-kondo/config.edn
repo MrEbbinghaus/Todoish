@@ -17,13 +17,13 @@
            com.wsscode.pathom.connect/defmutation                   clojure.core/defn
            com.fulcrologic.fulcro.ui-state-machines/defstatemachine clojure.core/def}
  :linters {:misplaced-docstring {:level :error}
-           :unresolved-symbol
-                                {:exclude
-                                 [(com.fulcrologic.fulcro.mutations/defmutation)
-                                  (fulcro-spec.core/provided!)]}
+           :not-empty?          {:level :off}
+           :unresolved-symbol   {:exclude
+                                   [(com.fulcrologic.fulcro.mutations/defmutation)
+                                    (fulcro-spec.core/provided!)]}
            :unused-binding      {:level :off}
            :unused-referred-var {:level :off}
-           :unused-namespace    {:level :off}
+           :single-key-in       {:level :warning}
            :consistent-alias    {;; warn when alias for clojure.string is
                                  ;; different from str
                                  :aliases {clojure.string                                 str
