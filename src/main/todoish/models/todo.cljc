@@ -70,7 +70,7 @@
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
 (defmutation add-todo [{:keys [todo]}]
-  (ok-action [{:keys [state]}]
+  (action [{:keys [state]}]
     (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
   (remote [env]
     (-> env
