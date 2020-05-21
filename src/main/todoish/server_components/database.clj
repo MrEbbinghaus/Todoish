@@ -3,20 +3,12 @@
     [mount.core :refer [defstate args]]
     [todoish.server-components.config :refer [config]]
     [taoensso.timbre :as log]
-    [datahike.api :as d]))
+    [datahike.api :as d]
+    [todoish.models.todo :as todo]))
 
-(def todo-schema [{:db/ident       :todo/id
-                   :db/cardinality :db.cardinality/one
-                   :db/unique      :db.unique/identity
-                   :db/valueType   :db.type/uuid}
-                  {:db/ident       :todo/done?
-                   :db/cardinality :db.cardinality/one
-                   :db/valueType   :db.type/boolean}
-                  {:db/ident       :todo/task
-                   :db/cardinality :db.cardinality/one
-                   :db/valueType   :db.type/string}])
 
-(def schema (into [] cat [todo-schema]))
+
+(def schema (into [] cat [todo/schema]))
 
 (defstate db
   :start

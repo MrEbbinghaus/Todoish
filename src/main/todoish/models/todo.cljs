@@ -8,12 +8,10 @@
             [com.fulcrologic.fulcro.algorithms.tempid :as tempid]
             [com.fulcrologic.fulcro.algorithms.normalized-state :as norm-state]
             [clojure.string :as str]
-            [taoensso.timbre :as log]
             [material-ui.icons :as mui-icon]
             [material-ui.transitions :as transitions]
             [material-ui.data-display :as mui-list]
-            [material-ui.inputs :as mui-input]
-            [material-ui.surfaces :as surfaces]))
+            [material-ui.inputs :as mui-input]))
 
 (defn new-todo [task]
   #:todo{:id    (tempid/tempid)
@@ -22,20 +20,17 @@
 
 ; region mutations
 
-(defn with-key [env k]
-  (assoc-in env [:ast :key] k))
-
 (defmutation delete-todo [{:keys [todo/id]}]
   (action [{:keys [state]}]
     (swap! state norm-state/remove-entity [:todo/id id]))
   (remote [env]
-    (with-key env 'todoish.api.todo/delete-todo)))
+    (m/with-server-side-mutation env 'todoish.api.todo/delete-todo)))
 
 (defmutation update-todo-done [{:todo/keys [id done?]}]
   (action [{:keys [state]}]
     (swap! state assoc-in [:todo/id id :todo/done?] done?))
   (remote [env]
-    (with-key env 'todoish.api.todo/toggle-todo)))
+    (m/with-server-side-mutation env 'todoish.api.todo/toggle-todo)))
 ;endregion
 
 (defsc Todo [this {:todo/keys [id task done?]}]
@@ -74,7 +69,7 @@
     (swap! state mrg/merge-component Todo todo :prepend [:all-todos]))
   (remote [env]
     (-> env
-      (with-key 'todoish.api.todo/add-todo)
+      (m/with-server-side-mutation 'todoish.api.todo/add-todo)
       (m/with-target (targeting/prepend-to [:all-todos]))
       (m/returning Todo))))
 
