@@ -4,11 +4,10 @@
     [todoish.server-components.config :refer [config]]
     [taoensso.timbre :as log]
     [datahike.api :as d]
-    [todoish.models.todo :as todo]))
+    [todoish.models.todo :as todo]
+    [todoish.models.user :as user]))
 
-
-
-(def schema (into [] cat [todo/schema]))
+(def schema (into [] cat [todo/schema user/schema]))
 
 (defstate db
   :start
@@ -31,4 +30,5 @@
       (log/info "Transacting schema...")
       (d/transact conn schema)
 
-      conn)))
+      conn))
+  :stop (d/release db))

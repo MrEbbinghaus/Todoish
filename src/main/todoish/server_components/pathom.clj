@@ -7,6 +7,7 @@
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
     [todoish.api.todo :as todo]
+    [todoish.api.user :as user]
     [todoish.server-components.config :refer [config]]
     [todoish.server-components.database :refer [db]]))
 
@@ -22,7 +23,7 @@
      (update ::pc/index-resolvers (fn [rs] (apply dissoc rs (filter #(clojure.string/starts-with? (namespace %) "com.wsscode.pathom") (keys rs)))))
      (update ::pc/index-mutations (fn [rs] (apply dissoc rs (filter #(clojure.string/starts-with? (namespace %) "com.wsscode.pathom") (keys rs))))))})
 
-(def all-resolvers [todo/resolvers index-explorer])
+(def all-resolvers [todo/resolvers index-explorer user/resolvers])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
