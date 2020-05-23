@@ -57,7 +57,7 @@
       [:body
        [:div#todoish
         initial-html]
-       (include-js "js/main/main.js")]])))
+       (include-js "/js/main/main.js")]])))
 
 (defn index-with-db [csrf-token normalized-db]
   (log/debug "Serving index.html")
@@ -91,7 +91,7 @@
               :rel  "stylesheet"}]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]
-      [:link {:href "css/core.css"
+      [:link {:href "/css/core.css"
               :rel  "stylesheet"}]]
      [:body
       [:div#app]
