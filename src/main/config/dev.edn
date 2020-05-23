@@ -6,4 +6,5 @@
                                              :frame-options  :sameorigin
                                              :xss-protection {:enable? false
                                                               :mode    :block}}}
+ :parser                         {:trace? true}
  :db                             {:uri "datahike:file:///tmp/example"}}

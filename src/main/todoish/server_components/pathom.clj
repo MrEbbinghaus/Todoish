@@ -52,26 +52,30 @@
                        ::p/env     {::p/reader                 [p/map-reader pc/parallel-reader
                                                                 pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes   #{">"}
-                                    ::pc/mutation-join-globals [:tempids]}
+                                    ::pc/mutation-join-globals [:tempids ::p/errors]}
                        ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
                                                          ;; environment, like the server config, database connections, etc.
-                                                         (assoc env
-                                                           ;:db @db-connection ; real datomic would use (d/db db-connection)
-                                                           ;:connection db-connection
-                                                           :conn db
-                                                           :db @db
-                                                           :config config)))
+                                                         (let [{user-id :todoish.models.user/id valid? :session/valid? :as session} (get-in env [:ring/request :session])]
+                                                           (log/info "Session: " session)
+                                                           (assoc env
+                                                             ;:db @db-connection ; real datomic would use (d/db db-connection)
+                                                             ;:connection db-connection
+
+                                                             :AUTH/user-id (when valid? user-id)
+                                                             :conn db
+                                                             :db @db
+                                                             :config config))))
                                     (preprocess-parser-plugin log-requests)
                                     p/error-handler-plugin
                                     (p/post-process-parser-plugin p/elide-not-found)
                                     p/trace-plugin]})
         ;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.
         ;; Understand that this makes the network responses much larger and should not be used in production.
-        trace? (not (nil? (System/getProperty "trace")))]
+        trace? (get-in config [:parser :trace?])]
     (fn wrapped-parser [env tx]
-      (async/<!! (real-parser env (if *trace?*
+      (async/<!! (real-parser env (if trace?
                                     (conj tx :com.wsscode.pathom/trace)
                                     tx))))))
 

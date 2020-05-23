@@ -43,8 +43,8 @@
   "Add a user to the db."
   [conn email password]
   [d/conn? ::email ::password => map?]
-  (d/transact! conn [{::id (d/squuid)
-                      ::email email
+  (d/transact! conn [{::id       (d/squuid)
+                      ::email    email
                       ::password (hash-password password)}]))
 
 (s/def ::error? boolean?)
@@ -55,11 +55,19 @@
       (add! conn email password)
       {})
     {:error? true
-     :email "E-Mail already in use!"}))
+     :email  "E-Mail already in use!"}))
 
-(>defn password-valid? [db email attempt]
-  [d/db? ::email ::password => boolean?]
-  (let [{::keys [password]} (d/pull db [::password] [::email email])]
+(>defn get-by-email
+  ([db email]
+   [d/db? ::email => map?]
+   (get-by-email db email [::id ::email]))
+  ([db email query]
+   [d/db? ::email any? => map?]
+   (d/pull db query [::email email])))
+
+(>defn password-valid? [user attempt]
+  [(s/keys :req [::password]) ::password => boolean?]
+  (let [{::keys [password]} user]
     (hs/check attempt password)))
 
 
