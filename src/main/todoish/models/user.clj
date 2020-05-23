@@ -41,9 +41,9 @@
 
 (>defn add!
   "Add a user to the db."
-  [conn email password]
-  [d/conn? ::email ::password => map?]
-  (d/transact! conn [{::id       (d/squuid)
+  [conn id email password]
+  [d/conn? ::id ::email ::password => map?]
+  (d/transact! conn [{::id       id
                       ::email    email
                       ::password (hash-password password)}]))
 

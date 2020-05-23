@@ -14,7 +14,8 @@
             [taoensso.timbre :as log]
             [todoish.routing :as routing]
             [material-ui.navigation :as navigation]
-            [todoish.ui.themes :as themes]))
+            [todoish.ui.themes :as themes]
+            [com.fulcrologic.fulcro.algorithms.merge :as mrg]))
 
 (declare LoginPage)
 
@@ -29,6 +30,11 @@
        :margin    :normal}
       props)))
 
+(defsc Session [_ _]
+  {:query         [:session/valid? :todoish.models.user/id]
+   :ident         (fn [] [:component/id :session])
+   :initial-state {:session/valid?         false
+                   :todoish.models.user/id nil}})
 
 (defmutation sign-up [{:user/keys [_email _password]}]
   (action [_] true)
@@ -43,7 +49,9 @@
           (m/set-string! component :ui/email-error :value "E-Mail already in use!")))))
 
   (remote [env]
-    (m/with-server-side-mutation env 'todoish.api.user/sign-up-user)))
+    (-> env
+      (m/with-server-side-mutation 'todoish.api.user/sign-up-user)
+      (m/returning Session))))
 
 (defsc SignUpPage [this {:user/keys [email password]
                          :ui/keys   [email-error password-error]}
@@ -117,22 +125,26 @@
                     "Already have an account? Sign In"))))))))))
 
 
+
 (defmutation sign-in [{:user/keys [_email _password]}]
   (action [_] true)
-  (ok-action [{:keys [component] :as env}]
-    (let [{:signin/keys [result errors]} (get-in env [:result :body 'todoish.api.user/sign-in])]
+  (ok-action [{:keys [component app] :as env}]
+    (let [{:signin/keys  [result errors]
+           :account/keys [id]}
+          (get-in env [:result :body 'todoish.api.user/sign-in])]
       (if (= result :success)
         (do
           (m/set-string! component :user/password :value "")
           (comp/transact! component [(routing/route-to {:path (log/spy :info (dr/path-to todo-app/TodoApp todo-app/MainTodoList))})]))
         (when errors
-          (log/info errors)
           (or
             (contains? errors :account-does-not-exist)
             (contains? errors :invalid-credentials))
           (m/set-string!! component :ui/password-error :value "E-Mail or password is wrong.")))))
   (remote [env]
-    (m/with-server-side-mutation env 'todoish.api.user/sign-in)))
+    (-> env
+      (m/with-server-side-mutation 'todoish.api.user/sign-in)
+      (m/returning Session))))
 
 (defsc LoginPage [this {:user/keys [email password]
                         :ui/keys   [email-error password-error]} _ {:keys [sign-in-button]}]

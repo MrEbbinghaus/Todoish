@@ -4,10 +4,7 @@
     [com.fulcrologic.fulcro.algorithms.server-render :as ssr]
     [taoensso.timbre :as log]
     [todoish.application :refer [SPA]]
-    [todoish.ui.root :as root]
-    [com.fulcrologic.fulcro.algorithms.merge :as mrg]
-    [com.fulcrologic.fulcro.algorithms.denormalize :as denormalize]
-    [com.fulcrologic.fulcro.components :as comp]))
+    [todoish.ui.root :as root]))
 
 (defn ^:export refresh []
   (log/info "Hot code Remount")
