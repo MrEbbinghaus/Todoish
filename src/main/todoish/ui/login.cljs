@@ -156,8 +156,7 @@
 
                    :user/password     ""
                    :ui/password-error nil}
-   :css           [[:.sign-in-button {:margin-top    ((:spacing themes/shared) 2 "")
-                                      :margin-bottom ((:spacing themes/shared) 1.5 "")}]]}
+   :css           [[:.sign-in-button {:margin-top    ((:spacing themes/shared) 2 "")}]]}
   (layout/container {:maxWidth "sm"}
     (mutils/css-baseline {})
     (layout/box {:mt 8}
@@ -193,14 +192,15 @@
                             :fullWidth true
                             :className sign-in-button}
               "Sign in"))
-          (layout/grid
-            {:container true
-             :justify   :space-between}
-            (layout/grid {:item true :xs true}
-              (navigation/link {:variant :body2} "Forgot password?"))
-            (layout/grid {:item true}
+          (layout/box {:mt 2}
+            (layout/grid
+              {:container true
+               :justify   :space-between}
+              (layout/grid {:item true :xs true}
+                (navigation/link {:variant :body2} "Forgot password?"))
+              (layout/grid {:item true}
 
-              (navigation/link
-                (routing/with-route this (dr/path-to SignUpPage)
-                  {:variant :body2})
-                "Don't have an account? Sign Up"))))))))
+                (navigation/link
+                  (routing/with-route this (dr/path-to SignUpPage)
+                    {:variant :body2})
+                  "Don't have an account? Sign Up")))))))))
