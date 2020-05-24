@@ -46,27 +46,28 @@
 
 (def ^:dynamic *trace?* false)
 
-(defn build-parser []
+(defn build-parser [conn & {:keys [tempids?] :or {tempids? true}}]
   (let [real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
                        ::p/env     {::p/reader                 [p/map-reader pc/parallel-reader
                                                                 pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes   #{">"}
-                                    ::pc/mutation-join-globals [:tempids :errors]}
+                                    ::pc/mutation-join-globals [(when tempids? :tempids) :errors]}
                        ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
                                                          ;; environment, like the server config, database connections, etc.
-                                                         (let [{user-id :todoish.models.user/id valid? :session/valid? :as session} (get-in env [:ring/request :session])]
-                                                           (log/info "Session: " session)
-                                                           (assoc env
-                                                             ;:db @db-connection ; real datomic would use (d/db db-connection)
-                                                             ;:connection db-connection
-
-                                                             :AUTH/user-id (when valid? user-id)
-                                                             :conn db
-                                                             :db @db
-                                                             :config config))))
+                                                         (let [{user-id :user/id
+                                                                valid?  :session/valid?}
+                                                               (get-in env [:ring/request :session])]
+                                                           ;:db @db-connection ; real datomic would use (d/db db-connection)
+                                                           ;:connection db-connection
+                                                           (merge
+                                                             {:AUTH/user-id (when valid? user-id)
+                                                              :conn         conn
+                                                              :db           @conn
+                                                              :config       config}
+                                                             env))))
                                     (preprocess-parser-plugin log-requests)
                                     p/error-handler-plugin
                                     (p/post-process-parser-plugin p/elide-not-found)
@@ -80,4 +81,4 @@
                                     tx))))))
 
 (defstate parser
-  :start (build-parser))
+  :start (build-parser db))

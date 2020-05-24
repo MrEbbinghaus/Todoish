@@ -1,9 +1,9 @@
 (ns todoish.models.todo
   (:require
-    [datahike.api :as d]
-    [datahike.core :as dc]
+    [datahike.core :as d]
     [ghostwheel.core :refer [>defn >defn- => | ? <-]]
-    [clojure.spec.alpha :as s]))
+    [clojure.spec.alpha :as s]
+    [todoish.models.user :as user]))
 
 (s/def ::id uuid?)
 (s/def ::task string?)
@@ -16,35 +16,45 @@
               :db/valueType   :db.type/uuid}
              {:db/ident       ::done?
               :db/cardinality :db.cardinality/one
-              :db/valueType   :db.type/boolean}
+              :db/valueType   :db.type/boolean
+              :db/doc         "True if the todo is done."}
              {:db/ident       ::task
               :db/cardinality :db.cardinality/one
-              :db/valueType   :db.type/string}])
+              :db/valueType   :db.type/string
+              :db/doc         "The actual content of a todo"}
+             {:db/ident       ::owner
+              :db/cardinality :db.cardinality/one
+              :db/valueType   :db.type/ref
+              :db/doc         "`user` of the todo."}])
 
 (>defn real-id []
   [=> ::id]
-  (dc/squuid))
+  (d/squuid))
 
 (>defn update-todo! [conn id new-todo]
-  [dc/conn? ::id any? => any?]
-  (d/transact conn [(merge new-todo
-                      {:db/id [::id id]})]))
+  [d/conn? ::id any? => any?]
+  (d/transact! conn [(merge new-todo
+                       {:db/id [::id id]})]))
 
 (>defn add-todo! [conn new-todo]
-  [dc/conn? ::todo => any?]
-  (d/transact conn [new-todo]))
+  [d/conn? ::todo => any?]
+  (d/transact! conn [new-todo]))
 
 (>defn delete-todo! [conn id]
-  [dc/conn? ::id => any?]
-  (d/transact conn [[:db.fn/retractEntity [::id id]]]))
+  [d/conn? ::id => any?]
+  (d/transact! conn [[:db.fn/retractEntity [::id id]]]))
 
-(>defn all-todo-ids [db]
-  [dc/db? => (s/coll-of ::id)]
+(>defn all-todo-ids-for-user [db user-id]
+  [d/db? ::user/id => (s/coll-of ::id)]
   (d/q
     '[:find [?id ...]
-      :where [_ ::id ?id]]
-    db))
+      :in $ user-id
+      :where
+      [?e ::id ?id]
+      [?e ::owner ?owner]
+      [?owner ::user/id user-id]]
+    db user-id))
 
 (>defn get-todo [db id]
-  [dc/db? ::id => ::todo]
+  [d/db? ::id => ::todo]
   (d/pull db [::id ::task ::done?] [::id id]))

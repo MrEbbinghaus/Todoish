@@ -9,6 +9,11 @@
 
 (def schema (into [] cat [todo/schema user/schema]))
 
+(defn new-database [uri]
+  (d/create-database uri
+    :initial-tx schema)
+  (d/connect uri))
+
 (defstate db
   :start
   (let [{{:db/keys [uri reset?]

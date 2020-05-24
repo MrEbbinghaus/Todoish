@@ -30,9 +30,8 @@
           {:signin/result  :success
            :session/valid? true
            ::user/id       (::user/id user)}
-          (merge
-            (dissoc user ::user/password)
-            {:session/valid? true}))
+          {:user/id (::user/id user)
+           :session/valid? true})
         {:signin/result :fail
          :signin/errors #{:invalid-credentials}}))
     {:signin/result :fail
@@ -55,9 +54,8 @@
          ::user/id       id
          :session/valid? true
          ::p/env         (assoc env :db (:db-after tx-report))}
-        (merge
-          (dissoc user ::user/password)
-          {:session/valid? true})))))
+        {:user/id (::user/id user)
+         :session/valid? true}))))
 
 (defmutation sign-out [env _]
   {::pc/output [:session/valid?]}
