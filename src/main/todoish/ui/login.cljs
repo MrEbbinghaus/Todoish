@@ -39,8 +39,8 @@
 (defmutation sign-up [{:user/keys [_email _password]}]
   (action [_] true)
   (ok-action [{:keys [component] :as env}]
-    (let [{:signup/keys [result errors]} (get-in env [:result :body `todoish.api.user/sign-up-user])]
-      (if (= result :success)
+    (let [{:keys [errors]} (get-in env [:result :body `todoish.api.user/sign-up-user])]
+      (if (empty? errors)
         (do
           (m/set-string! component :user/password :value "")
           (comp/transact! component [(routing/route-to {:path (dr/path-to todo-app/TodoApp todo-app/MainTodoList)})]))
@@ -111,7 +111,7 @@
                             :fullWidth true
                             :className submit-button}
               "Sign up")
-            (layout/box {:mt "1rem"}
+            (layout/box {:mt 2}
               (layout/grid
                 {:container true
                  :justify   :flex-end}
@@ -128,14 +128,13 @@
 
 (defmutation sign-in [{:user/keys [_email _password]}]
   (action [_] true)
-  (ok-action [{:keys [component app] :as env}]
-    (let [{:signin/keys  [result errors]
-           :account/keys [id]}
+  (ok-action [{:keys [component] :as env}]
+    (let [{:keys [errors]}
           (get-in env [:result :body 'todoish.api.user/sign-in])]
-      (if (= result :success)
+      (if (empty? errors)
         (do
           (m/set-string! component :user/password :value "")
-          (comp/transact! component [(routing/route-to {:path (log/spy :info (dr/path-to todo-app/TodoApp todo-app/MainTodoList))})]))
+          (comp/transact! component [(routing/route-to {:path (dr/path-to todo-app/TodoApp todo-app/MainTodoList)})]))
         (when errors
           (or
             (contains? errors :account-does-not-exist)

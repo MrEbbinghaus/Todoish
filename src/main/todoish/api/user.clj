@@ -21,7 +21,7 @@
 
 (defmutation sign-in [{:keys [db] :as env} {:user/keys [email password]}]
   {::pc/params [:user/email :user/password]
-   ::pc/output [:session/valid? ::user/id :signin/result :signin/errors]}
+   ::pc/output [:session/valid? ::user/id :signin/result :errors]}
   (log/info "Authenticating" email)
   (if (user/email-in-db? db email)
     (let [user (user/get-by-email db email [::user/id ::user/password])]
@@ -36,15 +36,15 @@
         {:signin/result :fail
          :signin/errors #{:invalid-credentials}}))
     {:signin/result :fail
-     :signin/errors #{:account-does-not-exist}}))
+     :errors #{:account-does-not-exist}}))
 
 
 (defmutation sign-up-user [{:keys [conn] :as env} {:user/keys [email password]}]
   {::pc/params [:user/email :user/password]
-   ::pc/output [:session/valid? ::user/id :signup/result :signup/errors]}
+   ::pc/output [:session/valid? ::user/id :signup/result :errors]}
   (if (user/email-in-db? @conn email)
     {:signup/result :fail
-     :signup/errors #{:email-in-use}}
+     :errors #{:email-in-use}}
     (let [id (d/squuid)
           user #::user{:id       id
                        :email    email

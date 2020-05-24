@@ -52,7 +52,7 @@
                        ::p/env     {::p/reader                 [p/map-reader pc/parallel-reader
                                                                 pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes   #{">"}
-                                    ::pc/mutation-join-globals [:tempids ::p/errors]}
+                                    ::pc/mutation-join-globals [:tempids :errors]}
                        ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
