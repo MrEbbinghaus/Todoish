@@ -6,12 +6,12 @@
 (def light-theme (merge
                    shared
                    {:palette {:type    "light"
-                              :primary {:main "#d32f2f"}}}))
+                              :primary {:main "#d32f2f"}
+                              :secondary {:main "#b0bec5"}}}))
 
 (def dark-theme (merge
                   shared
-                  {:palette {:type    "dark"
-                             :primary {:main "#d32f2f"}}}))
+                  (assoc-in light-theme [:palette :type] "dark")))
 
 (def compiled-themes
   {:dark  (create-mui-theme dark-theme)
