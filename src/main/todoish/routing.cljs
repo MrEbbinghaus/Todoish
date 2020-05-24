@@ -10,7 +10,8 @@
     [clojure.string :as str]
     [edn-query-language.core :as eql]
     [com.fulcrologic.fulcro.components :as comp]
-    [pushy.core :as pushy]))
+    [pushy.core :as pushy]
+    [com.fulcrologic.fulcro.dom.events :as evt]))
 
 ; code from https://chrisodonnell.dev/posts/giftlist/routing/
 ; Thanks a lot!
@@ -68,3 +69,11 @@
   [{:keys [path]}]
   (action [_]
     (route-to! path)))
+
+(defn with-route [this path props]
+  (merge
+    {:href    (path->url path)
+     :onClick (fn [e]
+                (evt/prevent-default! e)
+                (comp/transact! this [(route-to {:path path})]))}
+    props))

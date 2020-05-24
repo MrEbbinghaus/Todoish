@@ -117,11 +117,8 @@
                  :justify   :flex-end}
                 (layout/grid {:item true}
                   (navigation/link
-                    {:variant :body2
-                     :href    "#"
-                     :onClick (fn [e]
-                                (evt/prevent-default! e)
-                                (comp/transact! this [(routing/route-to {:path (dr/path-to LoginPage)})]))}
+                    (routing/with-route this (dr/path-to LoginPage)
+                      {:variant :body2})
                     "Already have an account? Sign In"))))))))))
 
 
@@ -202,10 +199,8 @@
             (layout/grid {:item true :xs true}
               (navigation/link {:variant :body2} "Forgot password?"))
             (layout/grid {:item true}
+
               (navigation/link
-                {:variant :body2
-                 :href    "#"
-                 :onClick (fn [e]
-                            (evt/prevent-default! e)
-                            (comp/transact! this [(routing/route-to {:path (dr/path-to SignUpPage)})]))}
+                (routing/with-route this (dr/path-to SignUpPage)
+                  {:variant :body2})
                 "Don't have an account? Sign Up"))))))))
