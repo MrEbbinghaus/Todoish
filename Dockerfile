@@ -18,8 +18,9 @@ COPY . .
 RUN lein uberjar
 
 FROM openjdk:11-jre-slim
-COPY src/main/config/prod.edn /config/production.edn
-COPY --from=clj-build /tmp/target/todoish.jar todoish.jar
-
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dconfig=/config/production.edn", "-Dfulcro.logging=info", "-jar", "todoish.jar"]
+CMD ["java", \
+     "-XX:+UseContainerSupport","-XX:MaxRAMPercentage=85","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC", \
+     "-Dconfig=/config/production.edn", "-Dfulcro.logging=info", "-jar", "todoish.jar"]
+
+COPY --from=clj-build /tmp/target/todoish.jar todoish.jar

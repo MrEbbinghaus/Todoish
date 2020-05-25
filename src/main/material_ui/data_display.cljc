@@ -1,4 +1,5 @@
 (ns material-ui.data-display
+  (:refer-clojure :exclude [list])
   (:require
     [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
     #?@(:cljs
