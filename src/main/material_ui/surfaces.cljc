@@ -3,7 +3,7 @@
     [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
     #?@(:cljs [["@material-ui/core/Paper" :default Paper]
                ["@material-ui/core/AppBar" :default AppBar]
-               ["@material-ui/core/ToolBar" :default ToolBar]
+               ["@material-ui/core/Toolbar" :default ToolBar]
                ["@material-ui/core/Card" :default Card]
                ["@material-ui/core/CardContent" :default CardContent]
                ["@material-ui/core/CardActions" :default CardActions]])))

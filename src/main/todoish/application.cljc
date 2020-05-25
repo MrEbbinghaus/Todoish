@@ -12,6 +12,14 @@
     [com.fulcrologic.fulcro-css.css :as css]
     [com.fulcrologic.fulcro.data-fetch :as df]))
 
+
+#?(:cljs
+   (def secured-request-middleware
+     ;; The CSRF token is embedded via server_components/html.clj
+     (->
+       (net/wrap-csrf-token (or js/fulcro_network_csrf_token "TOKEN-NOT-IN-HTML!"))
+       (net/wrap-fulcro-request))))
+
 #?(:cljs
    (defn client-did-mount [app]
      (routing/start-history! app)
@@ -27,7 +35,8 @@
 
 (defonce SPA (app/fulcro-app
                #?(:cljs {:client-did-mount client-did-mount
-                         :remotes          {:remote (net/fulcro-http-remote {:url "/api"})}
+                         :remotes          {:remote (net/fulcro-http-remote {:url "/api"
+                                                                             :request-middleware secured-request-middleware})}
                          :props-middleware (comp/wrap-update-extra-props
                                              (fn [cls extra-props]
                                                (merge extra-props (css/get-classnames cls))))})))
