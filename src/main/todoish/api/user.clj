@@ -62,10 +62,10 @@
   (response-updating-session env {:session/valid? false} {:session/valid? false ::user/id nil}))
 
 (defresolver current-session-resolver [env _]
-  {::pc/output [{::current-session [:session/valid? :account/id]}]}
+  {::pc/output [{::current-session [:session/valid? ::user/id]}]}
   (let [{:keys [session/valid?] :as session} (get-in env [:ring/request :session])]
     (if valid?
-      {::current-session {:session/valid? true :account/id (::user/id session)}}
+      {::current-session {:session/valid? true ::user/id (:user/id session)}}
       {::current-session {:session/valid? false}})))
 
 (def resolvers [sign-up-user sign-in current-session-resolver sign-out])

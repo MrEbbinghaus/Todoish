@@ -36,6 +36,11 @@
             (parser {:ring/request request} tx)))
         (handler request)))))
 
+(comp/defsc Session [_ _]
+  {:query         [{:todoish.api.user/current-session [:session/valid? :todoish.models.user/id]}]
+   :ident         (fn [] [:component/id :session])
+   :initial-state {:todoish.api.user/current-session {:session/valid?         false
+                                                      :todoish.models.user/id nil}}})
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
@@ -44,6 +49,7 @@
   ([csrf-token] (index csrf-token nil nil))
   ([csrf-token initial-state-script] (index csrf-token initial-state-script nil))
   ([csrf-token initial-state-script initial-html]
+
    (html5
      [:html {:lang "en"}
       [:head
@@ -69,6 +75,10 @@
   (log/debug "Serving index.html")
   (let [initial-state-script (ssr/initial-state->script-tag normalized-db)]
     (index csrf-token initial-state-script nil)))
+
+(defn index-with-credentials [csrf-token request]
+  (let [initial-state (ssr/build-initial-state (parser {:ring/request request} (comp/get-query Session)) Session)]
+    (index csrf-token (ssr/initial-state->script-tag initial-state))))
 
 (defn ssr-html [csrf-token app normalized-db root-component-class]
   (log/debug "Serving index.html")
@@ -113,7 +123,7 @@
 
       (or (#{"/" "/index.html"} uri)
         (not (#{"/api" "/wslive.html"} uri)))
-      (-> (index anti-forgery-token)
+      (-> (index-with-credentials anti-forgery-token req)
         (resp/response)
         (resp/content-type "text/html"))
 
