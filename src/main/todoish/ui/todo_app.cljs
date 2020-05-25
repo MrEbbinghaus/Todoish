@@ -18,7 +18,8 @@
             [taoensso.timbre :as log]
             [todoish.ui.themes :as themes]
             [com.fulcrologic.fulcro-css.css :as css]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [com.fulcrologic.fulcro.data-fetch :as df]))
 
 (def transition-group (interop/react-factory TransitionGroup))
 
@@ -98,11 +99,15 @@
                    {:ui/app-bar (comp/get-query AppBar)}
                    {:ui/nav-drawer (comp/get-query sidedrawer/NavDrawer)}]
    :ident         (fn [] [:page/id :todo-app])
-   :initial-state (fn [_] {:all-todos         []
-                           :ui/content-router (comp/get-initial-state ContentRouter)
+   :initial-state (fn [_] {:ui/content-router (comp/get-initial-state ContentRouter)
                            :ui/nav-drawer     (comp/get-initial-state sidedrawer/NavDrawer)
                            :ui/app-bar        (comp/get-initial-state AppBar)})
    :route-segment ["home"]
+   :will-enter    (fn will-enter [app _]
+                    (dr/route-deferred (comp/get-ident TodoApp nil)
+                      #(df/load! app :all-todos todo/Todo
+                         {:post-mutation        `dr/target-ready
+                          :post-mutation-params {:target (comp/get-ident TodoApp nil)}})))
    :css           [[:.appbar {:color      :black
                               :transition ((get-in themes/shared [:transitions :create])
                                            #js ["margin" "width"]

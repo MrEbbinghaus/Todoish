@@ -48,11 +48,11 @@
   [d/db? ::user/id => (s/coll-of ::id)]
   (d/q
     '[:find [?id ...]
-      :in $ user-id
+      :in $ ?user-id
       :where
       [?e ::id ?id]
       [?e ::owner ?owner]
-      [?owner ::user/id user-id]]
+      [?owner ::user/id ?user-id]]
     db user-id))
 
 (>defn get-todo [db id]

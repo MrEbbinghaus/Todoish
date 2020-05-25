@@ -1,17 +1,15 @@
 (ns todoish.ui.root
   (:require
-    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h1 h3 form button input span]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-    [com.fulcrologic.fulcro.dom.events :as evt]
-    [material-ui.layout :as layout :refer [container]]
     [material-ui.utils :refer [css-baseline]]
-    [material-ui.styles :refer [theme-provider prefers-dark?]]
+    [material-ui.styles :as styles :refer [prefers-dark?]]
     [todoish.ui.themes :as themes]
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [todoish.ui.todo-app :as todo-app]
     [todoish.ui.login :as login]
-    [com.fulcrologic.fulcro-css.css-injection :as inj]))
+    [com.fulcrologic.fulcro-css.css-injection :as inj]
+    [material-ui.utils :as mutils]))
 
 
 (def dark-mode-matcher
@@ -31,11 +29,11 @@
 
 (defrouter RootRouter [this {:keys [current-state]}]
   {:router-targets [login/LoginPage todo-app/TodoApp login/SignUpPage]}
-  (case current-state
-    :pending (dom/div "Loading...")
-    :failed (dom/div "Failed!")
-    ;; default will be used when the current state isn't yet set
-    (dom/div "No route selected.")))
+  #_(case current-state
+      :pending (dom/div "Loading...")
+      :failed (dom/div "Failed!")
+      ;; default will be used when the current state isn't yet set
+      (dom/div "No route selected.")))
 
 (def ui-root-router (comp/factory RootRouter))
 
@@ -45,6 +43,7 @@
    :initial-state
           (fn [_] {:ui/root-router (comp/get-initial-state RootRouter)
                    :ui/theme       (if (dark-mode?) :dark :light)})}
-  (theme-provider {:theme (themes/get-mui-theme theme)}
+  (styles/theme-provider {:theme (themes/get-mui-theme theme)}
+    (mutils/css-baseline {})
     (inj/style-element {:component Root})
     (ui-root-router root-router)))
