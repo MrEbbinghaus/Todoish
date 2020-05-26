@@ -57,11 +57,11 @@
        [:meta {:charset "utf-8"}]
        [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
        initial-state-script
+       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]
        (include-js "/js/main/main.js")
        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
        [:link {:href "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
-       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
+       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]]
       [:body
        [:div#todoish
         (or
