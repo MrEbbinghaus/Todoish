@@ -41,6 +41,13 @@
    :ident         (fn [] [:component/id :session])
    :initial-state {:todoish.api.user/current-session {:session/valid?         false
                                                       :todoish.models.user/id nil}}})
+(defmacro link-to-icon [size]
+  (let [url (str "/manifest/icons/icon-" size "x" size ".png")
+        dimensions (str size "x" size)]
+    `(do
+       [:link {:rel "icon" :type "image/png" :sizes ~dimensions :href ~url}]
+       [:link {:rel "apple-touch-icon" :type "image/png" :sizes ~dimensions :href ~url}])))
+
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
@@ -55,18 +62,38 @@
       [:head
        [:title "Todoish"]
        [:meta {:charset "utf-8"}]
-       [:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
+       ;[:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
        initial-state-script
+       [:link {:rel "manifest" :href "/manifest/manifest.json"}]
+       [:meta {:name "mobile-web-app-capable" :content "yes"}]
+       [:meta {:name "apple-mobile-web-app-capable" :content "yes"}]
+       [:meta {:name "application-name" :content "Todoish"}]
+       [:meta {:name "apple-mobile-web-app-title" :content "Todoish"}]
+       [:meta {:name "theme-color" :content "#d32f2f"}]
+       [:meta {:name "msapplication-navbutton-color" :content "#d32f2f"}]
+       [:meta {:name "apple-mobile-web-app-status-bar-style" :content "default"}]
+       [:link {:rel "mask-icon" :sizes "any" :href "/manifest/icons/T.svg" :color "#d32f2f"}]
+       [:meta {:name "msapplication-starturl" :content "/home"}]
+       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=5"}]
+       (link-to-icon 72)
+       (link-to-icon 96)
+       (link-to-icon 128)
+       (link-to-icon 144)
+       (link-to-icon 152)
+       (link-to-icon 192)
+       (link-to-icon 384)
+       (link-to-icon 512)
+
        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
        [:link {:href "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
        [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-      [:body
+      [:body {:style "color: #d32f2f;"}
        [:div#todoish
         (or
           initial-html
           [:div {:style "background-color: #d32f2f; width: 100%;  height: 100%; margin: 0; position: absolute; top: 0; left: 0;
-                       display: flex; align-items: center; justify-content: center;"}
+                      display: flex; align-items: center; justify-content: center;"}
            [:h1 {:style "text-align: center; color: white; font-family: 'Great Vibes', cursive; font-weight: 600; font-size: xxx-large;"}
             "Todoish"]])
         initial-html]

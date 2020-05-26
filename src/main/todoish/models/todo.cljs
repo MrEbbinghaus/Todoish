@@ -66,7 +66,7 @@
     (surfaces/expansion-panel-actions {}
       (mui-input/button
         {:size    :small
-         :onClick #(comp/set-state! this {:deleting? true})}
+         :onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
         "Delete"))))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
