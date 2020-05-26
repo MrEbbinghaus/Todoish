@@ -62,7 +62,9 @@
       [:head
        [:title "Todoish"]
        [:meta {:charset "utf-8"}]
-       ;[:meta {:name "viewport" :content "minimum-scale=1, initial-scale=1, width=device-width"}]
+       [:link {:rel "icon" :type "image/png" :href "/favicon-16.png" :sizes "16x16"}]
+       [:link {:rel "icon" :type "image/png" :href "/favicon-32.png" :sizes "32x32"}]
+       [:link {:rel "icon" :type "image/png" :href "/favicon-48.png" :sizes "48x48"}]
        initial-state-script
        [:link {:rel "manifest" :href "/manifest/manifest.json"}]
        [:meta {:name "mobile-web-app-capable" :content "yes"}]
@@ -86,9 +88,8 @@
 
        [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
        [:link {:href "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
-       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-      [:body {:style "color: #d32f2f;"}
+      [:body
        [:div#todoish
         (or
           initial-html
