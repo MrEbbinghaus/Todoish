@@ -9,7 +9,8 @@
                ["@material-ui/core/CardActions" :default CardActions]
                ["@material-ui/core/ExpansionPanel" :default ExpansionPanel]
                ["@material-ui/core/ExpansionPanelSummary" :default ExpansionPanelSummary]
-               ["@material-ui/core/ExpansionPanelDetails" :default ExpansionPanelDetails]])))
+               ["@material-ui/core/ExpansionPanelDetails" :default ExpansionPanelDetails]
+               ["@material-ui/core/ExpansionPanelActions" :default ExpansionPanelActions]])))
 
 (def paper (interop/react-factory #?(:cljs Paper :clj nil)))
 (def app-bar (interop/react-factory #?(:cljs AppBar :clj nil)))
@@ -22,3 +23,4 @@
 (def expansion-panel (interop/react-factory #?(:cljs ExpansionPanel :clj nil)))
 (def expansion-panel-summary (interop/react-factory #?(:cljs ExpansionPanelSummary :clj nil)))
 (def expansion-panel-details (interop/react-factory #?(:cljs ExpansionPanelDetails :clj nil)))
+(def expansion-panel-actions (interop/react-factory #?(:cljs ExpansionPanelActions :clj nil)))
