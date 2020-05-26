@@ -10,8 +10,12 @@
             [clojure.string :as str]
             [material-ui.icons :as mui-icon]
             [material-ui.transitions :as transitions]
-            [material-ui.data-display :as mui-list]
-            [material-ui.inputs :as mui-input]))
+            [material-ui.data-display :as dd]
+            [material-ui.surfaces :as surfaces]
+            [material-ui.inputs :as mui-input]
+            [material-ui.utils :as mutils]
+            [todoish.ui.themes :as themes]
+            [material-ui.icons :as icons]))
 
 (defn new-todo [task]
   #:todo{:id    (tempid/tempid)
@@ -33,34 +37,37 @@
     (m/with-server-side-mutation env 'todoish.api.todo/toggle-todo)))
 ;endregion
 
-(defsc Todo [this {:todo/keys [id task done?]}]
+(defsc Todo [this {:todo/keys [id task done?]} _ {:keys [heading]}]
   {:query         [:todo/id :todo/task :todo/done?]
    :ident         :todo/id
-   :initial-state (fn [task] (new-todo task))}
-  (let [deleting? (comp/get-state this :deleting?)]
-    (transitions/collapse
-      {:in            (not deleting?)
-       :unmountOnExit true
-       :onExited      #(comp/transact! this [(delete-todo {:todo/id id})])}
-      (dom/div
-        (mui-list/list-item
-          {:data-done done?
-           :button    true}
-          (mui-list/list-item-icon nil
-            (mui-input/checkbox
-              {:edge    :start
-               :checked done?
-               :onClick #(comp/transact! this
-                           [(update-todo-done {:todo/id    id
-                                               :todo/done? (not done?)})]
-                           {:refresh [:all-todos]})}))
-          (mui-list/list-item-text
-            {:primary task})
-          (mui-list/list-item-secondary-action nil
-            (mui-input/icon-button
-              {:onClick    #(comp/set-state! this {:deleting? true})
-               :aria-label "delete"}
-              (mui-icon/delete))))))))
+   :initial-state (fn [task] (new-todo task))
+   :css           [[:.heading
+                    {:display     :flex
+                     :align-items :center}]]}
+  (surfaces/expansion-panel {}
+    (surfaces/expansion-panel-summary
+      {:expandIcon (icons/expand-more)}
+      (dd/list-item
+        {:data-done done?}
+        (dd/list-item-icon nil
+          (mui-input/checkbox
+            {:edge    :start
+             :checked done?
+             :onClick (fn [e]
+                        (evt/stop-propagation! e)
+                        (comp/transact! this
+                          [(update-todo-done {:todo/id    id
+                                              :todo/done? (not done?)})]
+                          {:refresh [:all-todos]}))}))
+        (dd/list-item-text
+          {:primary task})))
+    (surfaces/expansion-panel-details {} (str "My ID is: " id))
+    (dd/divider {})
+    (surfaces/expansion-panel-actions {}
+      (mui-input/button
+        {:size    :small
+         :onClick #(comp/set-state! this {:deleting? true})}
+        "Delete"))))
 
 (def ui-todo (comp/factory Todo {:keyfn :todo/id}))
 
