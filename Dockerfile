@@ -18,6 +18,7 @@ COPY . .
 RUN lein uberjar
 
 FROM openjdk:11-jre-slim
+COPY src/main/config/prod.edn /config/production.edn
 EXPOSE 8080
 CMD ["java", \
      "-XX:+UseContainerSupport","-XX:MaxRAMPercentage=85","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC", \
