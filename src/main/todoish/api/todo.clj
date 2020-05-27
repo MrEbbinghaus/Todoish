@@ -23,7 +23,13 @@
 (defmutation toggle-todo [{:keys [db conn AUTH/user-id] :as env} {:todo/keys [id done?]}]
   {::pc/params [:todo/id]}
   (when (access-to-todo!? db user-id id)
-    (let [tx-report (todo/update-todo! conn id {:todo/done? done?})]
+    (let [tx-report (todo/update-todo! conn id {::todo/done? done?})]
+      {::p/env (assoc env :db (:db-after tx-report))})))
+
+(defmutation edit-todo [{:keys [db conn AUTH/user-id] :as env} {:todo/keys [id task]}]
+  {::pc/params [:todo/id]}
+  (when (access-to-todo!? db user-id id)
+    (let [tx-report (todo/update-todo! conn id {::todo/task task})]
       {::p/env (assoc env :db (:db-after tx-report))})))
 
 (defmutation add-todo [{:keys [conn AUTH/user-id] :as env} {:keys [todo]}]
@@ -61,4 +67,4 @@
       #:todo{:id id :task task :done? done?})))
 
 ;; Do not forget to add everything here
-(def resolvers [add-todo all-todo-ids toggle-todo todo-resolver delete-todo])
+(def resolvers [add-todo all-todo-ids toggle-todo todo-resolver delete-todo edit-todo])

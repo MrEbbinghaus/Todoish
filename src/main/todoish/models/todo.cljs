@@ -15,7 +15,9 @@
             [material-ui.inputs :as mui-input]
             [material-ui.utils :as mutils]
             [todoish.ui.themes :as themes]
-            [material-ui.icons :as icons]))
+            [material-ui.icons :as icons]
+            [material-ui.inputs :as inputs]
+            [material-ui.layout :as layout]))
 
 (defn new-todo [task]
   #:todo{:id    (tempid/tempid)
@@ -34,16 +36,17 @@
   (action [{:keys [state]}]
     (swap! state assoc-in [:todo/id id :todo/done?] done?))
   (remote [env]
-    (m/with-server-side-mutation env 'todoish.api.todo/toggle-todo)))
+    (m/with-server-side-mutation env 'todoish.api.todo/update-todo)))
+
+(defmutation edit-todo [{:todo/keys [id task]}]
+  (remote [env] (m/with-server-side-mutation env 'todoish.api.todo/edit-todo)))
 ;endregion
 
-(defsc Todo [this {:todo/keys [id task done?]} _ {:keys [heading]}]
-  {:query         [:todo/id :todo/task :todo/done?]
+(defsc Todo [this {:todo/keys [id task done?] :keys [ui/editing?]}]
+  {:query         [:todo/id :todo/task :todo/done? :ui/editing?]
    :ident         :todo/id
    :initial-state (fn [task] (new-todo task))
-   :css           [[:.heading
-                    {:display     :flex
-                     :align-items :center}]]}
+   :pre-merge     (fn [{:keys [data-tree _current-normalized _state-map _query]}] (merge {:ui/editing? false} data-tree))}
   (surfaces/expansion-panel {}
     (surfaces/expansion-panel-summary
       {:expandIcon (icons/expand-more)}
@@ -59,11 +62,41 @@
                           [(update-todo-done {:todo/id    id
                                               :todo/done? (not done?)})]
                           {:refresh [:all-todos]}))}))
-        (dd/list-item-text
-          {:primary task})))
+        (if-not editing?
+          (dd/list-item-text
+            {:primary task})
+          (layout/grid
+            {:component  "form"
+             :onClick    evt/stop-propagation!
+             :onFocus    evt/stop-propagation!
+             :onSubmit   (fn submit-changed [e]
+                           (evt/prevent-default! e)
+                           (evt/stop-propagation! e)
+                           (comp/transact! this [(edit-todo {:todo/id   id
+                                                             :todo/task task})])
+                           (m/set-value! this :ui/editing? false))
+             :container  true
+             :spacing    1
+             :alignItems :flex-end}
+            (layout/grid {:item true :style {:flexGrow 1}}
+              (inputs/textfield
+                {:value     task
+                 :fullWidth true
+                 :onChange  (fn [e] (m/set-string! this :todo/task :event e))}))
+            (layout/grid {:item true}
+              (inputs/button
+                {:color :primary
+                 :type  :submit
+                 :size  :small}
+                "Save"))))))
+
     (surfaces/expansion-panel-details {} (str "My ID is: " id))
     (dd/divider {})
     (surfaces/expansion-panel-actions {}
+      (mui-input/button
+        {:size    :small
+         :onClick #(m/set-value! this :ui/editing? true)}
+        "Edit")
       (mui-input/button
         {:size    :small
          :onClick #(comp/transact! this [(delete-todo {:todo/id id})])}
