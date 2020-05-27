@@ -19,7 +19,8 @@
             [todoish.ui.themes :as themes]
             [com.fulcrologic.fulcro-css.css :as css]
             [clojure.string :as str]
-            [com.fulcrologic.fulcro.data-fetch :as df]))
+            [com.fulcrologic.fulcro.data-fetch :as df]
+            [todoish.ui.settings :as settings]))
 
 (def transition-group (interop/react-factory TransitionGroup))
 
@@ -50,7 +51,7 @@
           #_(transition-group {:className "todo-list"}))))))
 
 (defrouter ContentRouter [this props]
-  {:router-targets [MainTodoList]})
+  {:router-targets [MainTodoList settings/SettingsPage]})
 
 (def ui-content-router (comp/factory ContentRouter))
 

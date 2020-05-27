@@ -5,7 +5,10 @@
             [material-ui.data-display :as dd]
             [material-ui.layout :as layout]
             [material-ui.navigation :as navigation]
-            [material-ui.surfaces :as surfaces :refer [toolbar paper]]))
+            [material-ui.surfaces :as surfaces :refer [toolbar paper]]
+            [todoish.routing :as routing]
+            [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
+            [todoish.ui.settings :as settings]))
 
 (defmutation toggle-drawer [{:keys [open?]}]
   (action [{:keys [state ref]}]
@@ -27,7 +30,14 @@
           (dom/div {:style {:height "4px"}})
           (dd/list {}
             (dd/list-item {:button true}
-              (dd/list-item-text {:primary "Hello World"}))))]
+              (dd/list-item-text {:primary "Hello World"}))
+            (dd/list-item
+              {:button  true
+               :onClick #(comp/transact! this
+                           [(routing/route-to
+                              {:path (dr/path-to (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                                       settings/SettingsPage)})])}
+              (dd/list-item-text {:primary "Settings"}))))]
     (comp/fragment
       (layout/hidden
         {:smUp true}

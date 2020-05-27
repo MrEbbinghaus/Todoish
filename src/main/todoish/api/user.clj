@@ -68,4 +68,17 @@
       {::current-session {:session/valid? true ::user/id (:user/id session)}}
       {::current-session {:session/valid? false}})))
 
-(def resolvers [sign-up-user sign-in current-session-resolver sign-out])
+(defmutation change-password [{:keys [db conn AUTH/user-id] :as env} {:keys [old-password new-password]}]
+  {::pc/params [:old-password :new-password]
+   ::pc/output [:errors]}
+  (let [pw-valid? (-> db
+                    (d/pull [::user/password] [::user/id user-id])
+                    (user/password-valid? old-password))]
+    (if pw-valid?
+      (do (d/transact! conn [{:db/id          [::user/id user-id]
+                              ::user/password new-password}])
+          {})
+      {:errors #{:invalid-credentials}})))
+
+
+(def resolvers [sign-up-user sign-in current-session-resolver sign-out change-password])

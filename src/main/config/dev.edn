@@ -7,4 +7,5 @@
                                              :xss-protection {:enable? false
                                                               :mode    :block}}}
  :parser                         {:trace? true}
- :db                             {:uri "datahike:file:///tmp/example"}}
+ :db                             {:db/reset? true
+                                  :db/uri    "datahike:file:///tmp/example"}}

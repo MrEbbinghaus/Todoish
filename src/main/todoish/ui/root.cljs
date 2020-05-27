@@ -1,15 +1,14 @@
 (ns todoish.ui.root
   (:require
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-    [material-ui.utils :refer [css-baseline]]
+    [material-ui.utils :as mutils :refer [css-baseline]]
     [material-ui.styles :as styles :refer [prefers-dark?]]
     [todoish.ui.themes :as themes]
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr :refer [defrouter]]
     [todoish.ui.todo-app :as todo-app]
     [todoish.ui.login :as login]
-    [com.fulcrologic.fulcro-css.css-injection :as inj]
-    [material-ui.utils :as mutils]))
+    [com.fulcrologic.fulcro-css.css-injection :as inj]))
 
 
 (def dark-mode-matcher
