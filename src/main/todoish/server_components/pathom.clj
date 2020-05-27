@@ -68,7 +68,8 @@
                                                               :db           @conn
                                                               :config       config}
                                                              env))))
-                                    (preprocess-parser-plugin log-requests)
+                                    (when (get-in config [:parser :trace?])
+                                      (preprocess-parser-plugin log-requests))
                                     p/error-handler-plugin
                                     (p/post-process-parser-plugin p/elide-not-found)
                                     p/trace-plugin]})
