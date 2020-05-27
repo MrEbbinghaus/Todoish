@@ -86,8 +86,7 @@
        (link-to-icon 384)
        (link-to-icon 512)
 
-       [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" :rel "stylesheet"}]
-       [:link {:href "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
+       [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes|Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
       [:body
        [:div#todoish
