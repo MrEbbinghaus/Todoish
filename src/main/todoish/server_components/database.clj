@@ -18,7 +18,7 @@
   :start
   (let [{{:db/keys [uri reset?]
           :or      {uri    "datahike:file:///tmp/example"
-                    reset? true}} :db} config
+                    reset? false}} :db} config
         _ (when reset?
             (log/info "Reset database...")
             (d/delete-database uri))
