@@ -91,7 +91,7 @@
                 "Save"))))))
 
     (surfaces/expansion-panel-details {} (str "My ID is: " id))
-    (dd/divider {})
+    (dd/divider {:variant :middle})
     (surfaces/expansion-panel-actions {}
       (mui-input/button
         {:size    :small
