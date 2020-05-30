@@ -35,6 +35,9 @@
   [::path => string?]
   (str/join (interleave (repeat "/") path)))
 
+(defn path-to->url [& targets-and-params]
+  (path->url (apply dr/path-to targets-and-params)))
+
 (>defn routable-path?
   "True if there exists a router target for the given path."
   [app path]
@@ -53,7 +56,6 @@
   (reset! history
     (pushy/pushy
       (fn [path]
-        (log/info "Change route: " path "Routable? " (routable-path? app path))
         (if (routable-path? app path)
           (dr/change-route! app path)
           ;; change URL and dispatch again

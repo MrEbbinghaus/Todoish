@@ -30,8 +30,7 @@
    :ident         (fn [] [:content/id :main-todo-list])
    :initial-state (fn [_]
                     {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
-   :route-segment [""]
-   :will-enter    (fn [app _] (dr/route-immediate [:page/id :main]))}
+   :route-segment ["home"]}
   (layout/container
     {:maxWidth "lg"}
     (todo/ui-new-todo-field new-todo)
@@ -102,7 +101,7 @@
    :initial-state (fn [_] {:ui/content-router (comp/get-initial-state ContentRouter)
                            :ui/nav-drawer     (comp/get-initial-state sidedrawer/NavDrawer)
                            :ui/app-bar        (comp/get-initial-state AppBar)})
-   :route-segment ["home"]
+   :route-segment ["app"]
    :will-enter    (fn will-enter [app _]
                     (dr/route-deferred (comp/get-ident TodoApp nil)
                       #(df/load! app :all-todos todo/Todo

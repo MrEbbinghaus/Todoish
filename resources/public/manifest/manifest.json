@@ -1,12 +1,11 @@
 {
   "name": "Todoish",
   "short_name": "Todoish",
-
   "theme_color": "#9a0007",
   "background_color": "#fafafa",
   "display": "standalone",
   "Scope": "/",
-  "start_url": "/home",
+  "start_url": "/app/home",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

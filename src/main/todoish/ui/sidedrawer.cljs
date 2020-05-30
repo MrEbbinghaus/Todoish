@@ -8,7 +8,8 @@
             [material-ui.surfaces :as surfaces :refer [toolbar paper]]
             [todoish.routing :as routing]
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-            [todoish.ui.settings :as settings]))
+            [todoish.ui.settings :as settings]
+            [taoensso.timbre :as log]))
 
 (defmutation toggle-drawer [{:keys [open?]}]
   (action [{:keys [state ref]}]
@@ -21,6 +22,15 @@
 (defn close-drawer! [comp] (comp/transact! comp [(toggle-drawer {:open? false})] {:compressible? true}))
 (defn toggle-drawer! [comp] (comp/transact! comp [(toggle-drawer {})] {:compressible? true}))
 
+(defn list-item-link [props & children]
+  (apply
+    dd/list-item
+    (merge
+      {:button    true
+       :component "a"}
+      props)
+    children))
+
 (defsc NavDrawer [this {:keys [ui/open?] :or {open? false}}]
   {:query         [:ui/open?]
    :initial-state {:ui/open? false}}
@@ -29,14 +39,15 @@
           (surfaces/toolbar)
           (dom/div {:style {:height "4px"}})
           (dd/list {}
-            (dd/list-item {:button true}
-              (dd/list-item-text {:primary "Hello World"}))
-            (dd/list-item
-              {:button  true
-               :onClick #(comp/transact! this
-                           [(routing/route-to
-                              {:path (dr/path-to (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
-                                       settings/SettingsPage)})])}
+            (list-item-link
+              {:href (routing/path-to->url
+                       (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                       (comp/registry-key->class 'todoish.ui.todo-app/MainTodoList))}
+              (dd/list-item-text {:primary "Home"}))
+            (list-item-link
+              {:href (routing/path-to->url
+                       (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                       settings/SettingsPage)}
               (dd/list-item-text {:primary "Settings"}))))]
     (comp/fragment
       (layout/hidden
