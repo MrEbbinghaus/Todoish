@@ -128,23 +128,24 @@
                        (comp/transact! this [(add-todo {:todo (new-todo value)})
                                              (m/set-props {:ui/value ""})])))}
     (mui-input/textfield
-      {:margin      "normal"
-       :variant     "outlined"
-       :fullWidth   true
-       :value       value
-       :error       error?
-       :helperText  (when error? "There is always something to do!")
-       :placeholder "What needs to be done?"
-       :onChange    #(comp/transact!
-                       this
-                       [(m/set-props {:ui/value  (evt/target-value %)
-                                      :ui/error? false})]
-                       {:compressible? true})
-       :InputProps  {:endAdornment (mui-input/input-adornment
-                                     {:position "end"}
-                                     (mui-input/button
-                                       {:color "primary"
-                                        :type  "submit"}
-                                       "Enter"))}})))
+      {:margin       "normal"
+       :variant      "outlined"
+       :fullWidth    true
+       :value        value
+       :error        error?
+       :helperText   (when error? "There is always something to do!")
+       :placeholder  "What needs to be done?"
+       :autocomplete :off
+       :onChange     #(comp/transact!
+                        this
+                        [(m/set-props {:ui/value  (evt/target-value %)
+                                       :ui/error? false})]
+                        {:compressible? true})
+       :InputProps   {:endAdornment (mui-input/input-adornment
+                                      {:position "end"}
+                                      (mui-input/button
+                                        {:color "primary"
+                                         :type  "submit"}
+                                        "Enter"))}})))
 
 (def ui-new-todo-field (comp/factory NewTodoField))

@@ -92,6 +92,7 @@
                              :value      email
                              :error      (boolean email-error)
                              :helperText email-error
+                             :inputProps {:autoComplete :email}
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/email-error nil)
                                            (m/set-string!! this :user/email :event e))})
@@ -101,6 +102,7 @@
                              :value      password
                              :error      (boolean password-error)
                              :helperText password-error
+                             :inputProps {:autoComplete :new-password}
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/password-error nil)
                                            (m/set-string!! this :user/password :event e))})
@@ -176,6 +178,7 @@
                              :type       :email
                              :error      (boolean email-error)
                              :helperText email-error
+                             :inputProps {:autoComplete :email}
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/email-error nil)
                                            (m/set-string!! this :user/email :event e))})
@@ -183,6 +186,7 @@
                              :type       :password
                              :error      (boolean password-error)
                              :helperText password-error
+                             :inputProps {:autoComplete :current-password}
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/password-error nil)
                                            (m/set-string!! this :user/password :event e))})
