@@ -28,9 +28,8 @@
      (let [{:todoish.api.user/keys [current-session]} (ssr/get-SSR-initial-state)]
        (mrg/merge-component! app login/Session current-session :replace [:todoish.api.user/current-session]))
      (let [logged-in? (get-in (app/current-state app) (into (comp/get-ident login/Session nil) [:session/valid?]))]
-       (if-not logged-in?
-         (comp/transact! app [(routing/route-to {:path (dr/path-to login/LoginPage)})])
-         (comp/transact! app [(routing/route-to {:path (dr/path-to todo-app/TodoApp todo-app/MainTodoList)})])))))
+       (when-not logged-in?
+         (comp/transact! app [(routing/route-to {:path (dr/path-to login/LoginPage)})])))))
 
 
 (defonce SPA (app/fulcro-app

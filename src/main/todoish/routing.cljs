@@ -10,8 +10,7 @@
     [clojure.string :as str]
     [edn-query-language.core :as eql]
     [com.fulcrologic.fulcro.components :as comp]
-    [pushy.core :as pushy]
-    [com.fulcrologic.fulcro.dom.events :as evt]))
+    [pushy.core :as pushy]))
 
 ; code from https://chrisodonnell.dev/posts/giftlist/routing/
 ; Thanks a lot!
@@ -40,29 +39,30 @@
   "True if there exists a router target for the given path."
   [app path]
   [app/fulcro-app? ::path => boolean?]
-  (let [state-map  (app/current-state app)
+  (let [state-map (app/current-state app)
         root-class (app/root-class app)
         root-query (comp/get-query root-class state-map)
-        ast        (eql/query->ast root-query)]
+        ast (eql/query->ast root-query)]
     (some? (dr/ast-node-for-route ast path))))
+
+(>defn route-to! [path]
+  [(s/coll-of string?) => nil?]
+  (pushy/set-token! @history (path->url path)))
 
 (defn start-history! [app]
   (reset! history
     (pushy/pushy
       (fn [path]
-        (dr/change-route! app path))
-      (fn [url]
-        (let [path (url->path url)]
-          (if (routable-path? app path)
-            path
-            default-route))))))
+        (log/info "Change route: " path "Routable? " (routable-path? app path))
+        (if (routable-path? app path)
+          (dr/change-route! app path)
+          ;; change URL and dispatch again
+          (route-to! default-route)))                       ; 404 ?
+      url->path)))
 
 (defn start! []
   (pushy/start! @history))
 
-(>defn route-to! [path]
-  [(s/coll-of string?) => nil?]
-  (pushy/set-token! @history (path->url path)))
 
 (defmutation route-to
   "Mutation to go to a specific route"
@@ -72,8 +72,5 @@
 
 (defn with-route [this path props]
   (merge
-    {:href    (path->url path)
-     :onClick (fn [e]
-                (evt/prevent-default! e)
-                (comp/transact! this [(route-to {:path path})]))}
+    {:href (path->url path)}
     props))
