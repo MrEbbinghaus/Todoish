@@ -11,7 +11,8 @@
             [material-ui.inputs :as inputs]
             [taoensso.timbre :as log]
             [material-ui.feedback :as feedback]
-            [todoish.ui.themes :as themes]))
+            [todoish.ui.themes :as themes]
+            [material-ui.data-display :as dd]))
 
 (defn wide-textfield
   "Outlined textfield on full width with normal margins. Takes the same props as `material-ui.inputs/textfield`"
@@ -46,45 +47,48 @@
                        :old-password-error nil
                        :new-password-error nil
                        :ui/success-open? false}}
-  (comp/fragment
+  (surfaces/paper {}
     (layout/box
       {:component "form"
-       :p 3
-       :onSubmit (fn submit-change-password [e]
-                   (evt/prevent-default! e)
-                   (comp/transact!! this
-                     [(m/set-props {:ui/old-password ""
-                                    :ui/new-password ""})
-                      (change-password {:old-password old-password :new-password new-password})]))}
+       :p         3
+       :onSubmit  (fn submit-change-password [e]
+                    (evt/prevent-default! e)
+                    (comp/transact!! this
+                      [(m/set-props {:ui/old-password ""
+                                     :ui/new-password ""})
+                       (change-password {:old-password old-password :new-password new-password})]))}
 
-      (dom/h2 "Change Password")
-      (wide-textfield {:label      "Old Password"
-                       :type       :password
-                       :error      (boolean old-password-error)
-                       :helperText old-password-error
-                       :required true
+      (dd/typography
+        {:component :h1
+         :variant   :h6}
+        "Change Password")
+      (wide-textfield {:label        "Old Password"
+                       :type         :password
+                       :error        (boolean old-password-error)
+                       :helperText   old-password-error
+                       :required     true
                        :autoComplete :current-password
-                       :value old-password
-                       :onChange   (fn [e]
-                                     (m/set-value!! this :ui/old-password-error nil)
-                                     (m/set-string!! this :ui/old-password :event e))})
-      (wide-textfield {:label      "New Password"
-                       :type       :password
-                       :error      (boolean new-password-error)
-                       :helperText new-password-error
-                       :required true
+                       :value        old-password
+                       :onChange     (fn [e]
+                                       (m/set-value!! this :ui/old-password-error nil)
+                                       (m/set-string!! this :ui/old-password :event e))})
+      (wide-textfield {:label        "New Password"
+                       :type         :password
+                       :error        (boolean new-password-error)
+                       :helperText   new-password-error
+                       :required     true
                        :autoComplete :new-password
-                       :value new-password
-                       :inputProps {:minLength 10}
-                       :onChange   (fn [e]
-                                     (m/set-value!! this :ui/new-password-error nil)
-                                     (m/set-string!! this :ui/new-password :event e))})
+                       :value        new-password
+                       :inputProps   {:minLength 10}
+                       :onChange     (fn [e]
+                                       (m/set-value!! this :ui/new-password-error nil)
+                                       (m/set-string!! this :ui/new-password :event e))})
       (layout/box {:mt 2}
         (inputs/button
-          {:color :primary
+          {:color   :primary
            :variant :contained
-           :margin "normal"
-           :type :submit}
+           :margin  "normal"
+           :type    :submit}
           "Save")))
     (feedback/snackbar
       {:autoHideDuration 6000
@@ -101,7 +105,11 @@
    :initial-state (fn [_] {:ui/new-password-form (comp/get-initial-state NewPasswordForm)})}
   (layout/container
     {:maxWidth "lg"}
-    (mutils/css-baseline {})
-    (layout/box {:m 4}
-      (surfaces/paper {}
+    (layout/grid
+      {:direction :column
+       :container true
+       :spacing   2
+       :justify   "flex-start"}
+      (layout/grid {:item true
+                    :xs   12}
         (ui-new-password-form new-password-form)))))

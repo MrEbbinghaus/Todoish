@@ -60,7 +60,8 @@
                {:keys [on-menu-click]}
                {:keys [appbar]}]
   {:query         [[::app/active-remotes '_]]
-   :css           [[:.appbar {:z-index (inc (get-in themes/shared [:zIndex :modal]))}]]
+   :css           [[:.appbar {:z-index       (inc (get-in themes/shared [:zIndex :modal]))
+                              :margin-bottom ((get-in themes/shared [:spacing]) 2 "")}]]
    :initial-state {}}
   (let [loading? (not (empty? active-remotes))]
     (surfaces/app-bar
