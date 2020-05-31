@@ -62,27 +62,30 @@
         {:component :h1
          :variant   :h6}
         "Change Password")
-      (wide-textfield {:label        "Old Password"
-                       :type         :password
-                       :error        (boolean old-password-error)
-                       :helperText   old-password-error
-                       :required     true
-                       :autoComplete :current-password
-                       :value        old-password
-                       :onChange     (fn [e]
-                                       (m/set-value!! this :ui/old-password-error nil)
-                                       (m/set-string!! this :ui/old-password :event e))})
-      (wide-textfield {:label        "New Password"
-                       :type         :password
-                       :error        (boolean new-password-error)
-                       :helperText   new-password-error
-                       :required     true
-                       :autoComplete :new-password
-                       :value        new-password
-                       :inputProps   {:minLength 10}
-                       :onChange     (fn [e]
-                                       (m/set-value!! this :ui/new-password-error nil)
-                                       (m/set-string!! this :ui/new-password :event e))})
+      (wide-textfield {:label      "Old Password"
+                       :type       :password
+                       :error      (boolean old-password-error)
+                       :helperText old-password-error
+                       :required   true
+                       :inputProps {:aria-label   "Old Password"
+                                    :autoComplete :current-password}
+                       :value      old-password
+                       :onChange   (fn [e]
+                                     (m/set-value!! this :ui/old-password-error nil)
+                                     (m/set-string!! this :ui/old-password :event e))})
+      (wide-textfield {:label      "New Password"
+                       :type       :password
+                       :error      (boolean new-password-error)
+                       :helperText new-password-error
+                       :required   true
+                       :value      new-password
+                       :inputProps {:minLength    10
+                                    :aria-label   "New Password"
+                                    :autoComplete :new-password}
+
+                       :onChange   (fn [e]
+                                     (m/set-value!! this :ui/new-password-error nil)
+                                     (m/set-string!! this :ui/new-password :event e))})
       (layout/box {:mt 2}
         (inputs/button
           {:color   :primary
@@ -92,9 +95,9 @@
           "Save")))
     (feedback/snackbar
       {:autoHideDuration 6000
-       :open success-open?
-       :onClose #(m/set-value!! this :ui/success-open? false)
-       :message "Password changed"})))
+       :open             success-open?
+       :onClose          #(m/set-value!! this :ui/success-open? false)
+       :message          "Password changed"})))
 
 (def ui-new-password-form (comp/factory NewPasswordForm))
 

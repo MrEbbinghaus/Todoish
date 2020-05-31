@@ -141,6 +141,7 @@
                         [(m/set-props {:ui/value  (evt/target-value %)
                                        :ui/error? false})]
                         {:compressible? true})
+       :inputProps   {:aria-label "New Todo"}
        :InputProps   {:endAdornment (mui-input/input-adornment
                                       {:position "end"}
                                       (mui-input/button
