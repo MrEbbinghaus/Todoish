@@ -77,7 +77,8 @@
              :onClick    on-menu-click}
             (icons/menu {})))
 
-        (dom/img {:src    "/Todoish.svg"
+        (dom/img {:src    "/assets/Todoish.svg"
+                  :type   "image/svg+xml"
                   :height 32}))
 
       (dom/div {:style {:height "4px"}}

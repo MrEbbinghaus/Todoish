@@ -42,7 +42,7 @@
    :initial-state {:todoish.api.user/current-session {:session/valid?         false
                                                       :todoish.models.user/id nil}}})
 (defmacro link-to-icon [size]
-  (let [url (str "/manifest/icons/icon-" size "x" size ".png")
+  (let [url (str "/assets/icons/icon-" size "x" size ".png")
         dimensions (str size "x" size)]
     `(do
        [:link {:rel "icon" :type "image/png" :sizes ~dimensions :href ~url}]
@@ -62,11 +62,11 @@
       [:head
        [:title "Todoish"]
        [:meta {:charset "utf-8"}]
-       [:link {:rel "icon" :type "image/png" :href "/favicon-16.png" :sizes "16x16"}]
-       [:link {:rel "icon" :type "image/png" :href "/favicon-32.png" :sizes "32x32"}]
-       [:link {:rel "icon" :type "image/png" :href "/favicon-48.png" :sizes "48x48"}]
+       [:link {:rel "icon" :type "image/png" :href "/assets/icons/favicon-16.png" :sizes "16x16"}]
+       [:link {:rel "icon" :type "image/png" :href "/assets/icons/favicon-32.png" :sizes "32x32"}]
+       [:link {:rel "icon" :type "image/png" :href "/assets/icons/favicon-48.png" :sizes "48x48"}]
        initial-state-script
-       [:link {:rel "manifest" :href "/manifest/manifest.json"}]
+       [:link {:rel "manifest" :href "/manifest.json"}]
        [:meta {:name "mobile-web-app-capable" :content "yes"}]
        [:meta {:name "apple-mobile-web-app-capable" :content "yes"}]
        [:meta {:name "application-name" :content "Todoish"}]
@@ -74,8 +74,8 @@
        [:meta {:name "theme-color" :content "#d32f2f"}]
        [:meta {:name "msapplication-navbutton-color" :content "#d32f2f"}]
        [:meta {:name "apple-mobile-web-app-status-bar-style" :content "default"}]
-       [:link {:rel "mask-icon" :sizes "any" :href "/manifest/icons/T.svg" :color "#d32f2f"}]
-       [:meta {:name "msapplication-starturl" :content "/home"}]
+       [:link {:rel "mask-icon" :sizes "any" :href "/assets/icons/T.svg" :color "#d32f2f"}]
+       [:meta {:name "msapplication-starturl" :content "/app/home"}]
        [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=5"}]
        (link-to-icon 72)
        (link-to-icon 96)
@@ -94,7 +94,7 @@
           initial-html
           [:div {:style "background-color: #d32f2f; width: 100%;  height: 100%; margin: 0; position: absolute; top: 0; left: 0;
                       display: flex; align-items: center; justify-content: center;"}
-           [:img {:src "/Todoish.svg" :max-width "30%"}]])
+           [:img {:src "/assets/Todoish.svg" :max-width "30%"}]])
         initial-html]
        (include-js "/js/main/main.js")]])))
 
