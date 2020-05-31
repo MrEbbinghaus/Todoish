@@ -135,7 +135,7 @@
        :error        error?
        :helperText   (when error? "There is always something to do!")
        :placeholder  "What needs to be done?"
-       :autocomplete :off
+       :autoComplete :off
        :onChange     #(comp/transact!
                         this
                         [(m/set-props {:ui/value  (evt/target-value %)

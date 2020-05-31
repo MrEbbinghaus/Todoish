@@ -179,6 +179,7 @@
                              :error      (boolean email-error)
                              :helperText email-error
                              :inputProps {:autoComplete :email}
+                             :value      email
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/email-error nil)
                                            (m/set-string!! this :user/email :event e))})
@@ -187,6 +188,7 @@
                              :error      (boolean password-error)
                              :helperText password-error
                              :inputProps {:autoComplete :current-password}
+                             :value      password
                              :onChange   (fn [e]
                                            (m/set-value!! this :ui/password-error nil)
                                            (m/set-string!! this :user/password :event e))})

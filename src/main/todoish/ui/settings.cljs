@@ -7,7 +7,6 @@
             [material-ui.surfaces :as surfaces]
             [com.fulcrologic.fulcro.dom :as dom]
             [com.fulcrologic.fulcro.dom.events :as evt]
-            [material-ui.data-display :as dd]
             [material-ui.utils :as mutils]
             [material-ui.inputs :as inputs]
             [taoensso.timbre :as log]
@@ -39,7 +38,7 @@
 (defsc NewPasswordForm [this {:ui/keys [old-password new-password
                                         old-password-error new-password-error
                                         success-open?]}]
-  {:query [:ui/old-password :ui/new-password :ui/old-password-error :ui/new-password-error :ui/success-open?]
+  {:query [:ui/old-password :ui/new-password :ui/old-password-error :ui/new-password-error :ui/success-open? fs/form-config-join]
    :ident (fn [] [:component/id :settings/new-password-form])
    :form-fields [:ui/old-password :ui/new-password]
    :initial-state #:ui{:old-password ""
@@ -96,10 +95,10 @@
 (def ui-new-password-form (comp/factory NewPasswordForm))
 
 (defsc SettingsPage [_this {:ui/keys [new-password-form]}]
-  {:query [:ui/new-password-form]
-   :ident (fn [] [:page/id :settings])
+  {:query         [{:ui/new-password-form (comp/get-query NewPasswordForm)}]
+   :ident         (fn [] [:page/id :settings])
    :route-segment ["settings"]
-   :initial-state {:ui/new-password-form (comp/get-initial-state NewPasswordForm)}}
+   :initial-state (fn [_] {:ui/new-password-form (comp/get-initial-state NewPasswordForm)})}
   (layout/container
     {:maxWidth "lg"}
     (mutils/css-baseline {})
