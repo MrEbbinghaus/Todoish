@@ -9,7 +9,10 @@
             [todoish.routing :as routing]
             [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
             [todoish.ui.settings :as settings]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [com.fulcrologic.fulcro.ui-state-machines]
+            [todoish.ui.themes :as themes]
+            [com.fulcrologic.fulcro-css.css :as css]))
 
 (defmutation toggle-drawer [{:keys [open?]}]
   (action [{:keys [state ref]}]
@@ -31,24 +34,38 @@
       props)
     children))
 
-(defsc NavDrawer [this {:keys [ui/open?] :or {open? false}}]
-  {:query         [:ui/open?]
-   :initial-state {:ui/open? false}}
+(defn nav-entry [component {:keys [label path css]}]
+  (let [{:keys [active]} css]
+    (list-item-link
+      {:href      (routing/path->url path)
+       :className (when (= (dr/current-route component) path) active)}
+      (dd/list-item-text
+        {:primary label}))))
+
+(defsc NavDrawer [this {:keys [ui/open?] :or {open? false}} _ css]
+  {:query         [:ui/open?
+                   [:com.fulcrologic.fulcro.ui-state-machines/asm-id :todoish.ui.todo-app/ContentRouter]]
+   :initial-state {:ui/open? false}
+   :css           [[:.active {:color            (get-in themes/light-theme [:palette :primary :main])
+                              ;;                                                                          ~12% opacity
+                              :background-color (str (get-in themes/light-theme [:palette :primary :main]) "1E")}]]}
   (let [drawer
         (comp/fragment
           (surfaces/toolbar)
           (dom/div {:style {:height "4px"}})
           (dd/list {}
-            (list-item-link
-              {:href (routing/path-to->url
-                       (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
-                       (comp/registry-key->class 'todoish.ui.todo-app/MainTodoList))}
-              (dd/list-item-text {:primary "Home"}))
-            (list-item-link
-              {:href (routing/path-to->url
-                       (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
-                       settings/SettingsPage)}
-              (dd/list-item-text {:primary "Settings"}))))]
+            (nav-entry this
+              {:label "Current Todos"
+               :path  (dr/path-to
+                        (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                        (comp/registry-key->class 'todoish.ui.todo-app/MainTodoList))
+               :css   css})
+            (nav-entry this
+              {:label "Settings"
+               :path  (dr/path-to
+                        (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                        settings/SettingsPage)
+               :css   css})))]
     (comp/fragment
       (layout/hidden
         {:smUp true}
