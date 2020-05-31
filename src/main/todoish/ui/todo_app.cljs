@@ -77,13 +77,8 @@
              :onClick    on-menu-click}
             (icons/menu {})))
 
-        (dd/typography
-          {:variant :h4
-           :style   {:fontFamily "'Great Vibes', cursive"
-                     :fontWeight 600
-                     :flexGrow   1}
-           :noWrap  true}
-          "Todoish"))
+        (dom/img {:src    "/Todoish.svg"
+                  :height 32}))
 
       (dom/div {:style {:height "4px"}}
         (when loading?
@@ -94,7 +89,7 @@
 (defsc TodoApp [this
                 {:keys [ui/nav-drawer ui/content-router ui/app-bar]}
                 _                                           ; computed
-                {:keys [appbar appbar-shifted]}]
+                {:keys [with-appbar appbar-shifted]}]
   {:query         [{:ui/content-router (comp/get-query ContentRouter)}
                    {:ui/app-bar (comp/get-query AppBar)}
                    {:ui/nav-drawer (comp/get-query sidedrawer/NavDrawer)}]
@@ -108,11 +103,11 @@
                       #(df/load! app :all-todos todo/Todo
                          {:post-mutation        `dr/target-ready
                           :post-mutation-params {:target (comp/get-ident TodoApp nil)}})))
-   :css           [[:.appbar {:color      :black
-                              :transition ((get-in themes/shared [:transitions :create])
-                                           #js ["margin" "width"]
-                                           #js {:easing   (get-in themes/shared [:transitions :easing :sharp])
-                                                :duration (get-in themes/shared [:transitions :duration :leavingScreen])})}]
+   :css           [[:.with-appbar {:color      :black
+                                   :transition ((get-in themes/shared [:transitions :create])
+                                                #js ["margin" "width"]
+                                                #js {:easing   (get-in themes/shared [:transitions :easing :sharp])
+                                                     :duration (get-in themes/shared [:transitions :duration :leavingScreen])})}]
                    [:.appbar-shifted {:margin-left "240px"
                                       :transition  ((get-in themes/shared [:transitions :create])
                                                     #js ["margin" "width"]
@@ -123,6 +118,6 @@
       (mutils/css-baseline {})
       (ui-appbar app-bar
         {:on-menu-click #(sidedrawer/toggle-drawer! this)})
-      (dom/main {:classes [appbar (when shift? appbar-shifted)]}
+      (dom/main {:classes [with-appbar (when shift? appbar-shifted)]}
         (ui-content-router content-router))
       (sidedrawer/ui-nav-drawer nav-drawer))))

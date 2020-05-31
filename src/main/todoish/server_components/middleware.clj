@@ -86,7 +86,7 @@
        (link-to-icon 384)
        (link-to-icon 512)
 
-       [:link {:href "https://fonts.googleapis.com/css?family=Great+Vibes|Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
+       [:link {:href "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" :rel "stylesheet"}]
        [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
       [:body
        [:div#todoish
@@ -94,8 +94,7 @@
           initial-html
           [:div {:style "background-color: #d32f2f; width: 100%;  height: 100%; margin: 0; position: absolute; top: 0; left: 0;
                       display: flex; align-items: center; justify-content: center;"}
-           [:h1 {:style "text-align: center; color: white; font-family: 'Great Vibes', cursive; font-weight: 600; font-size: xxx-large;"}
-            "Todoish"]])
+           [:img {:src "/Todoish.svg" :max-width "30%"}]])
         initial-html]
        (include-js "/js/main/main.js")]])))
 
