@@ -36,7 +36,7 @@
   (action [{:keys [state]}]
     (swap! state assoc-in [:todo/id id :todo/done?] done?))
   (remote [env]
-    (m/with-server-side-mutation env 'todoish.api.todo/update-todo)))
+    (m/with-server-side-mutation env 'todoish.api.todo/toggle-todo)))
 
 (defmutation edit-todo [{:todo/keys [id task]}]
   (remote [env] (m/with-server-side-mutation env 'todoish.api.todo/edit-todo)))

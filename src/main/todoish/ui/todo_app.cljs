@@ -30,27 +30,55 @@
    :ident         (fn [] [:content/id :main-todo-list])
    :initial-state (fn [_]
                     {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
-   :route-segment ["home"]}
-  (layout/container
-    {:maxWidth "lg"}
-    (todo/ui-new-todo-field new-todo)
-    (if (empty? all-todos)
-      (layout/box
-        {:p     2
-         :mx    "auto"
-         :color "text.primary"}
-        (dd/typography
-          {:align "center"
-           :color "textSecondary"}
-          "Nothing to do. Congratulations!"))
-      (dd/list nil
-        (->> all-todos
-          (sort-by :todo/done?)
-          (map todo/ui-todo)
-          #_(transition-group {:className "todo-list"}))))))
+   :route-segment ["home"]
+   :will-enter    (fn will-enter [app _]
+                    (dr/route-deferred (comp/get-ident MainTodoList nil)
+                      #(df/load! app :all-todos todo/Todo
+                         {:post-mutation        `dr/target-ready
+                          :post-mutation-params {:target (comp/get-ident MainTodoList nil)}})))}
+  (let [not-done-todos (remove :todo/done? all-todos)]
+    (layout/container
+      {:maxWidth "lg"}
+      (todo/ui-new-todo-field new-todo)
+      (if (empty? not-done-todos)
+        (layout/box
+          {:p     2
+           :mx    "auto"
+           :color "text.primary"}
+          (dd/typography
+            {:align "center"
+             :color "textSecondary"}
+            "Nothing to do. Congratulations!"))
+        (dd/list nil
+          (map todo/ui-todo not-done-todos))))))
+
+(defsc DoneTodoList [this {:keys [all-todos]}]
+  {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}]
+   :ident         (fn [] [:content/id :main-todo-list])
+   :initial-state {}
+   :route-segment ["done"]
+   :will-enter    (fn will-enter [app _]
+                    (dr/route-deferred (comp/get-ident DoneTodoList nil)
+                      #(df/load! app :all-todos todo/Todo
+                         {:post-mutation        `dr/target-ready
+                          :post-mutation-params {:target (comp/get-ident DoneTodoList nil)}})))}
+  (let [done-todos (filter :todo/done? all-todos)]
+    (layout/container
+      {:maxWidth "lg"}
+      (if (empty? done-todos)
+        (layout/box
+          {:p     2
+           :mx    "auto"
+           :color "text.primary"}
+          (dd/typography
+            {:align "center"
+             :color "textSecondary"}
+            "Nothing was marked done yet."))
+        (dd/list nil
+          (map todo/ui-todo done-todos))))))
 
 (defrouter ContentRouter [this props]
-  {:router-targets [MainTodoList settings/SettingsPage]})
+  {:router-targets [MainTodoList DoneTodoList settings/SettingsPage]})
 
 (def ui-content-router (comp/factory ContentRouter))
 

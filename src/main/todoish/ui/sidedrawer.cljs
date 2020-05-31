@@ -61,6 +61,13 @@
                         (comp/registry-key->class 'todoish.ui.todo-app/MainTodoList))
                :css   css})
             (nav-entry this
+              {:label "Done Todos"
+               :path  (dr/path-to
+                        (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
+                        (comp/registry-key->class 'todoish.ui.todo-app/DoneTodoList))
+               :css   css})
+            (dd/divider {})
+            (nav-entry this
               {:label "Settings"
                :path  (dr/path-to
                         (comp/registry-key->class 'todoish.ui.todo-app/TodoApp)
