@@ -4,12 +4,12 @@
     "description": "",
     "private": true,
     "dependencies": {
-        "@material-ui/core": "^4.10.0",
+        "@material-ui/core": "^4.10.1",
         "@material-ui/icons": "^4.9.1",
         "highlight.js": "10.0.3",
         "react-grid-layout": "^0.18.3",
         "react-transition-group": "^4.3.0",
-        "reakit": "^1.0.0-beta.14"
+        "reakit": "^1.0.4"
     },
     "scripts": {
         "client/main": "npx shadow-cljs watch :main",
@@ -24,14 +24,14 @@
         "start": "npx run-p client/server server"
     },
     "devDependencies": {
-        "intl-messageformat": "^8.3.15",
-        "karma": "^5.0.7",
+        "intl-messageformat": "^8.3.23",
+        "karma": "^5.0.9",
         "karma-chrome-launcher": "^3.1.0",
         "karma-cljs-test": "^0.1.0",
         "npm-run-all": "^4.1.5",
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
-        "shadow-cljs": "^2.9.8"
+        "shadow-cljs": "^2.10.5"
     },
     "author": "",
     "license": "MIT"
