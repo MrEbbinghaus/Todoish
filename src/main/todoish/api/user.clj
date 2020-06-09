@@ -5,7 +5,8 @@
     [com.fulcrologic.fulcro.server.api-middleware :as fmw]
     [todoish.models.user :as user]
     [taoensso.timbre :as log]
-    [datahike.core :as d]))
+    [datahike.api :as d]
+    [datahike.core :as d.core]))
 
 
 (defn response-updating-session
@@ -43,18 +44,18 @@
    ::pc/output [:session/valid? ::user/id :signup/result :errors]}
   (if (user/email-in-db? @conn email)
     {:signup/result :fail
-     :errors #{:email-in-use}}
-    (let [id (d/squuid)
+     :errors        #{:email-in-use}}
+    (let [id (d.core/squuid)
           user #::user{:id       id
                        :email    email
                        :password (user/hash-password password)}
-          tx-report (d/transact! conn [user])]
+          tx-report (d/transact conn [user])]
       (response-updating-session env
         {:signup/result  :success
          ::user/id       id
          :session/valid? true
          ::p/env         (assoc env :db (:db-after tx-report))}
-        {:user/id (::user/id user)
+        {:user/id        (::user/id user)
          :session/valid? true}))))
 
 (defmutation sign-out [env _]

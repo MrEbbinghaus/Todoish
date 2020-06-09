@@ -35,4 +35,5 @@
                                          :frame-options  :sameorigin
                                          :xss-protection {:enable? true
                                                           :mode    :block}}}
- :db                        {:uri "datahike:file:///tmp/example"}}
+ :db                        {:store {:backend :file
+                                     :path    "/tmp/example"}}}

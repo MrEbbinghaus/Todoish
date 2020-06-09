@@ -1,6 +1,7 @@
 (ns todoish.models.todo
   (:require
-    [datahike.core :as d]
+    [datahike.api :as d]
+    [datahike.core :as d.core]
     [ghostwheel.core :refer [>defn >defn- => | ? <-]]
     [clojure.spec.alpha :as s]
     [todoish.models.user :as user]))
@@ -29,23 +30,20 @@
 
 (>defn real-id []
   [=> ::id]
-  (d/squuid))
+  (d.core/squuid))
 
 (>defn update-todo! [conn id new-todo]
-  [d/conn? ::id any? => any?]
-  (d/transact! conn [(merge new-todo
-                       {:db/id [::id id]})]))
+  [d.core/conn? ::id any? => any?]
+  (d/transact conn [(merge new-todo
+                      {:db/id [::id id]})]))
 
-(>defn add-todo! [conn new-todo]
-  [d/conn? ::todo => any?]
-  (d/transact! conn [new-todo]))
 
 (>defn delete-todo! [conn id]
-  [d/conn? ::id => any?]
-  (d/transact! conn [[:db.fn/retractEntity [::id id]]]))
+  [d.core/conn? ::id => any?]
+  (d/transact conn [[:db.fn/retractEntity [::id id]]]))
 
 (>defn all-todo-ids-for-user [db user-id]
-  [d/db? ::user/id => (s/coll-of ::id)]
+  [d.core/db? ::user/id => (s/coll-of ::id)]
   (d/q
     '[:find [?id ...]
       :in $ ?user-id
@@ -56,5 +54,5 @@
     db user-id))
 
 (>defn get-todo [db id]
-  [d/db? ::id => ::todo]
+  [d.core/db? ::id => ::todo]
   (d/pull db [::id ::task ::done?] [::id id]))

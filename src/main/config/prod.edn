@@ -1,5 +1,5 @@
 {;; Legal Origins for API request.
- :legal-origins                  #{"product.domain" "localhost"}
+ :legal-origins                  #{"todoish.ebbinghaus.me" "localhost"}
 
  :org.httpkit.server/config      {:port 8080}
 
@@ -8,5 +8,7 @@
  :ring.middleware/defaults-config
                                  {:proxy    true
                                   :security {:ssl-redirect true}}
- :db                             {:db/uri    "datahike:file:///var/lib/todoish"
-                                  :db/reset? false}}
+ :db                             {:store     {:backend :file
+                                              :path    "/var/lib/todoish"}
+                                  :db/reset? false}
+ :parser                         {:trace? false}}

@@ -9,7 +9,8 @@
     [todoish.api.todo :as todo]
     [todoish.api.user :as user]
     [todoish.server-components.config :refer [config]]
-    [todoish.server-components.database :refer [db]]))
+    [todoish.server-components.database :refer [conn]]
+    [datahike.api :as d]))
 
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -44,16 +45,23 @@
   (log/debug "Pathom transaction:" (pr-str tx))
   req)
 
+(defn process-error [env err]
+  (log/error err))
+
 (def ^:dynamic *trace?* false)
 
 (defn build-parser [conn & {:keys [tempids?] :or {tempids? true}}]
-  (let [real-parser (p/parallel-parser
+  (let [;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.
+        ;; Understand that this makes the network responses much larger and should not be used in production.
+        trace? (get-in config [:parser :trace?])
+        real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
                        ::p/env     {::p/reader                 [p/map-reader pc/parallel-reader
                                                                 pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes   #{">"}
                                     ::pc/mutation-join-globals [(when tempids? :tempids) :errors]}
                        ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
+                                    (p/env-plugin {::p/process-error process-error})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
                                                          ;; environment, like the server config, database connections, etc.
@@ -65,21 +73,18 @@
                                                            (merge
                                                              {:AUTH/user-id (when valid? user-id)
                                                               :conn         conn
-                                                              :db           @conn
+                                                              :db           (d/db conn)
                                                               :config       config}
                                                              env))))
-                                    (when (get-in config [:parser :trace?])
+                                    (when trace?
                                       (preprocess-parser-plugin log-requests))
                                     p/error-handler-plugin
                                     (p/post-process-parser-plugin p/elide-not-found)
-                                    p/trace-plugin]})
-        ;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.
-        ;; Understand that this makes the network responses much larger and should not be used in production.
-        trace? (get-in config [:parser :trace?])]
+                                    p/trace-plugin]})]
     (fn wrapped-parser [env tx]
       (async/<!! (real-parser env (if trace?
                                     (conj tx :com.wsscode.pathom/trace)
                                     tx))))))
 
 (defstate parser
-  :start (build-parser db))
+  :start (build-parser conn))

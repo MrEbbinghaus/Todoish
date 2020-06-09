@@ -8,4 +8,5 @@
                                                               :mode    :block}}}
  :parser                         {:trace? true}
  :db                             {:db/reset? true
-                                  :db/uri    "datahike:file:///tmp/example"}}
+                                  :store     {:backend :file
+                                              :path    "/tmp/todoish"}}}

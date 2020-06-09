@@ -5,7 +5,7 @@
     [taoensso.timbre :as log]
     [todoish.models.todo :as todo]
     [todoish.models.user :as user]
-    [datahike.core :as d]))
+    [datahike.api :as d]))
 
 (defn access-to-todo!? [db user-id todo-id]
   (let [[todo] (d/q '[:find [(pull ?e [::todo/id {::todo/owner [::user/id]}])]
@@ -15,7 +15,7 @@
         owner-id (get-in todo [::todo/owner ::user/id])]
     (cond
       (nil? user-id) (throw (ex-info "User is not logged in!" {}))
-      (nil? todo) (throw (ex-info "Todo does not exists" {::todo/id todo-id}))
+      (nil? todo) (throw (ex-info "Todo does not exist." {::todo/id todo-id}))
       (not= user-id owner-id) (throw (ex-info "User is not owner of todo" {::todo/id todo-id}))
       :else true)))
 
@@ -39,7 +39,7 @@
     (let [real-id (todo/real-id)
           {:todo/keys [id task done?]} todo
           new-todo #::todo{:id real-id :task task :done? done? :owner [::user/id user-id]}
-          tx-report (d/transact! conn [new-todo])]
+          tx-report (d/transact conn [new-todo])]
       {:tempids {id real-id}
        ::p/env  (assoc env :db (:db-after tx-report))
        :todo/id real-id})
