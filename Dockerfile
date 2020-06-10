@@ -17,11 +17,10 @@ RUN yarn install && lein deps
 COPY . .
 RUN lein uberjar
 
-FROM openjdk:14-jdk-alpine
+FROM openjdk:14-jdk-slim
 COPY src/main/config/prod.edn /config/production.edn
 EXPOSE 8080
-CMD ["java", \
-     "-XX:+UseContainerSupport","-XX:MaxRAMPercentage=85","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC", \
-     "-Dconfig=/config/production.edn", "-Dfulcro.logging=info", "-jar", "todoish.jar"]
+ENTRYPOINT ["java", "-jar", "todoish.jar", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=85", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseZGC"]
+CMD ["-Dconfig=/config/production.edn", "-Dfulcro.logging=info"]
 
 COPY --from=clj-build /tmp/target/todoish.jar todoish.jar
