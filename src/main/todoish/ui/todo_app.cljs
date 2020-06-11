@@ -20,16 +20,17 @@
             [com.fulcrologic.fulcro-css.css :as css]
             [clojure.string :as str]
             [com.fulcrologic.fulcro.data-fetch :as df]
-            [todoish.ui.settings :as settings]))
+            [todoish.ui.settings :as settings]
+            [todoish.ui.components.new-todo-field :as new-todo-field]))
 
 (def transition-group (interop/react-factory TransitionGroup))
 
 (defsc MainTodoList [this {:keys [all-todos ui/new-todo]}]
   {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}
-                   {:ui/new-todo (comp/get-query todo/NewTodoField)}]
+                   {:ui/new-todo (comp/get-query new-todo-field/NewTodoField)}]
    :ident         (fn [] [:content/id :main-todo-list])
    :initial-state (fn [_]
-                    {:ui/new-todo (comp/get-initial-state todo/NewTodoField)})
+                    {:ui/new-todo (comp/get-initial-state new-todo-field/NewTodoField)})
    :route-segment ["home"]
    :will-enter    (fn will-enter [app _]
                     (dr/route-deferred (comp/get-ident MainTodoList nil)
@@ -39,7 +40,7 @@
   (let [not-done-todos (remove :todo/done? all-todos)]
     (layout/container
       {:maxWidth "lg"}
-      (todo/ui-new-todo-field new-todo)
+      (new-todo-field/ui-new-todo-field new-todo)
       (if (empty? not-done-todos)
         (layout/box
           {:p     2
