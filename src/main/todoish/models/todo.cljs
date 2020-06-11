@@ -55,6 +55,7 @@
         (dd/list-item-icon nil
           (mui-input/checkbox
             {:edge    :start
+             :color   :primary
              :checked done?
              :onClick (fn [e]
                         (evt/stop-propagation! e)
