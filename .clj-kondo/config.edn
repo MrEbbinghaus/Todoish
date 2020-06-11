@@ -39,4 +39,5 @@
                                            com.fulcrologic.fulcro.dom                     dom
                                            com.fulcrologic.fulcro-css.css                 css
                                            com.fulcrologic.fulcro.dom.events              evt
-                                           com.fulcrologic.fulcro.algorithms.form-state   fs}}}}
+                                           com.fulcrologic.fulcro.algorithms.form-state   fs
+                                           datahike.api                                   d}}}}
