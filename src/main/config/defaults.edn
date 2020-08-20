@@ -28,7 +28,8 @@
                                          :default-charset        "utf-8"
                                          :not-modified-responses true}
                              :static    {:resources "public"}
-                             :session   true
+                             :session   {:cookie-attrs {:max-age 2628000} ; 1 month
+                                         :cookie-name  "todoish-session"}
                              :security  {:anti-forgery   true
                                          :hsts           true
                                          :ssl-redirect   false

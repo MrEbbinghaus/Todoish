@@ -11,7 +11,7 @@
 
 (defn response-updating-session
   "Uses `mutation-response` as the actual return value for a mutation, but also stores the data into the (cookie-based) session."
-  [mutation-env mutation-response upsert-session]
+  [mutation-env upsert-session mutation-response]
   (let [existing-session (some-> mutation-env :ring/request :session)]
     (fmw/augment-response
       mutation-response
@@ -28,11 +28,11 @@
     (let [user (user/get-by-email db email [::user/id ::user/password])]
       (if (user/password-valid? user password)
         (response-updating-session env
+          {:user/id        (::user/id user)
+           :session/valid? true}
           {:signin/result  :success
            :session/valid? true
-           ::user/id       (::user/id user)}
-          {:user/id (::user/id user)
-           :session/valid? true})
+           ::user/id       (::user/id user)})
         {:signin/result :fail
          :signin/errors #{:invalid-credentials}}))
     {:signin/result :fail
@@ -51,16 +51,16 @@
                        :password (user/hash-password password)}
           tx-report (d/transact conn [user])]
       (response-updating-session env
+        {:user/id        (::user/id user)
+         :session/valid? true}
         {:signup/result  :success
          ::user/id       id
          :session/valid? true
-         ::p/env         (assoc env :db (:db-after tx-report))}
-        {:user/id        (::user/id user)
-         :session/valid? true}))))
+         ::p/env         (assoc env :db (:db-after tx-report))}))))
 
 (defmutation sign-out [env _]
   {::pc/output [:session/valid?]}
-  (response-updating-session env {:session/valid? false} {:session/valid? false ::user/id nil}))
+  (response-updating-session env nil {:session/valid? false}))
 
 (defresolver current-session-resolver [env _]
   {::pc/output [{::current-session [:session/valid? ::user/id]}]}
@@ -69,7 +69,7 @@
       {::current-session {:session/valid? true ::user/id (:user/id session)}}
       {::current-session {:session/valid? false}})))
 
-(defmutation change-password [{:keys [db conn AUTH/user-id] :as env} {:keys [old-password new-password]}]
+(defmutation change-password [{:keys [db conn AUTH/user-id]} {:keys [old-password new-password]}]
   {::pc/params [:old-password :new-password]
    ::pc/output [:errors]}
   (let [pw-valid? (-> db
