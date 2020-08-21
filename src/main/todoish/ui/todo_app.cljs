@@ -12,6 +12,7 @@
             [material-ui.progress :as progress]
             [material-ui.utils :as mutils :refer [css-baseline]]
             [material-ui.data-display :as dd]
+            [material-ui.transitions :as transitions]
             [com.fulcrologic.fulcro.algorithms.react-interop :as interop]
             [todoish.models.todo :as todo]
             [material-ui.styles :as styles]
@@ -23,7 +24,15 @@
             [todoish.ui.settings :as settings]
             [todoish.ui.components.new-todo-field :as new-todo-field]))
 
-(def transition-group (interop/react-factory TransitionGroup))
+(defn todo-items-list [todos]
+  (dd/list {}
+    (->> todos
+      (map todo/ui-todo)
+      (interpose (dd/divider {:variant   :inset
+                              :component :li}))
+      ;; bundle divider into fragment so that everything has a key
+      (partition-all 2)
+      (map (partial apply comp/fragment)))))
 
 (defsc MainTodoList [this {:keys [all-todos ui/new-todo]}]
   {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}
@@ -38,20 +47,20 @@
                          {:post-mutation        `dr/target-ready
                           :post-mutation-params {:target (comp/get-ident MainTodoList nil)}})))}
   (let [not-done-todos (remove :todo/done? all-todos)]
-    (layout/container
-      {:maxWidth "lg"}
+    (layout/container {:maxWidth "lg"}
       (new-todo-field/ui-new-todo-field new-todo)
       (if (empty? not-done-todos)
         (layout/box
           {:p     2
            :mx    "auto"
-           :color "text.primary"}
+           :color "text.secondary"
+           :clone true}
           (dd/typography
-            {:align "center"
-             :color "textSecondary"}
+            {:align "center"}
             "Nothing to do. Congratulations!"))
-        (dd/list nil
-          (map todo/ui-todo not-done-todos))))))
+        (surfaces/paper {}
+          (todo-items-list not-done-todos))))))
+
 
 (defsc DoneTodoList [this {:keys [all-todos]}]
   {:query         [{[:all-todos '_] (comp/get-query todo/Todo)}]
@@ -70,13 +79,13 @@
         (layout/box
           {:p     2
            :mx    "auto"
-           :color "text.primary"}
+           :color "text.secondary"
+           :clone true}
           (dd/typography
-            {:align "center"
-             :color "textSecondary"}
+            {:align "center"}
             "Nothing was marked done yet."))
-        (dd/list nil
-          (map todo/ui-todo done-todos))))))
+        (surfaces/paper {}
+          (todo-items-list done-todos))))))
 
 (defrouter ContentRouter [this props]
   {:router-targets [MainTodoList DoneTodoList settings/SettingsPage]})
@@ -86,33 +95,32 @@
 
 (defsc AppBar [this
                {::app/keys [active-remotes]}
-               {:keys [on-menu-click]}
-               {:keys [appbar]}]
+               {:keys [on-menu-click]}]
   {:query         [[::app/active-remotes '_]]
-   :css           [[:.appbar {:z-index       (inc (get-in themes/shared [:zIndex :modal]))
-                              :margin-bottom ((get-in themes/shared [:spacing]) 2 "")}]]
    :initial-state {}}
   (let [loading? (not (empty? active-remotes))]
-    (surfaces/app-bar
-      {:position  :sticky
-       :className appbar}
-      (surfaces/toolbar
-        {}
-        (when on-menu-click
-          (inputs/icon-button
-            {:edge       "start"
-             :color      :inherit
-             :aria-label "menu"
-             :onClick    on-menu-click}
-            (icons/menu {})))
+    (layout/box {:mb     2
+                 :zIndex "modal"
+                 :clone  true}
+      (surfaces/app-bar
+        {:position :sticky}
+        (surfaces/toolbar
+          {}
+          (when on-menu-click
+            (inputs/icon-button
+              {:edge       "start"
+               :color      :inherit
+               :aria-label "menu"
+               :onClick    on-menu-click}
+              (icons/menu {})))
 
-        (dom/img {:src    "/assets/Todoish.svg"
-                  :type   "image/svg+xml"
-                  :height 32}))
+          (dom/img {:src    "/assets/Todoish.svg"
+                    :type   "image/svg+xml"
+                    :height 32}))
 
-      (dom/div {:style {:height "4px"}}
-        (when loading?
-          (progress/linear-progress))))))
+        (dom/div {:style {:height "4px"}}
+          (when loading?
+            (progress/linear-progress)))))))
 
 (def ui-appbar (comp/computed-factory AppBar))
 
@@ -133,21 +141,21 @@
                       #(df/load! app :all-todos todo/Todo
                          {:post-mutation        `dr/target-ready
                           :post-mutation-params {:target (comp/get-ident TodoApp nil)}})))
-   :css           [[:.with-appbar {:color      :black
-                                   :transition ((get-in themes/shared [:transitions :create])
+   :css           [[:.with-appbar {:transition ((get-in themes/shared [:transitions :create])
                                                 #js ["margin" "width"]
                                                 #js {:easing   (get-in themes/shared [:transitions :easing :sharp])
                                                      :duration (get-in themes/shared [:transitions :duration :leavingScreen])})}]
-                   [:.appbar-shifted {:margin-left "240px"
-                                      :transition  ((get-in themes/shared [:transitions :create])
-                                                    #js ["margin" "width"]
-                                                    #js {:easing   (get-in themes/shared [:transitions :easing :easeOut])
-                                                         :duration (get-in themes/shared [:transitions :duration :enteringScreen])})}]]}
+                   [:.appbar-shifted {:transition ((get-in themes/shared [:transitions :create])
+                                                   #js ["margin" "width"]
+                                                   #js {:easing   (get-in themes/shared [:transitions :easing :easeOut])
+                                                        :duration (get-in themes/shared [:transitions :duration :enteringScreen])})}]]}
   (let [shift? (:ui/open? nav-drawer)]
-    (div
+    (comp/fragment
       (mutils/css-baseline {})
       (ui-appbar app-bar
         {:on-menu-click #(sidedrawer/toggle-drawer! this)})
-      (dom/main {:classes [with-appbar (when shift? appbar-shifted)]}
+      (layout/box {:component "main"
+                   :ml        (if shift? "240px" "0")
+                   :className (str/join " " [with-appbar (when shift? appbar-shifted)])}
         (ui-content-router content-router))
       (sidedrawer/ui-nav-drawer nav-drawer))))
